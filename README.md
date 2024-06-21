@@ -1,3 +1,3 @@
 # BouncingBall
-**It has bug when the ball_speed to fast**
+**It has a bug when the ball_speed is too fast**
 --bug fixed
