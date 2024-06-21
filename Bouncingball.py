@@ -36,17 +36,17 @@ def start_screen():
 
 def game_over_screen():
     screen.fill(BLACK)
-    show_text_on_screen("Game Over", 50, HEIGHT // 3)
-    show_text_on_screen(f"Your final score: {score}", 30, HEIGHT // 2)
-    show_text_on_screen("Press any key (except the power key) to restart...", 20, HEIGHT * 2 // 3)
+    show_text_on_screen("Game Over", 100, HEIGHT // 4)
+    show_text_on_screen(f"Your final score: {score}", 50, HEIGHT // 2)
+    show_text_on_screen("Press any key (except the power key) to restart...", 45, HEIGHT //1.5)
     pygame.display.flip()
     wait_for_key()
 
 def victory_screen():
     screen.fill(BLACK)
-    show_text_on_screen("Congratulations!", 50, HEIGHT // 3)
-    show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
-    show_text_on_screen("Press any key (except the power key) to exit...", 20, HEIGHT * 2 // 3)
+    show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
+    show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
+    show_text_on_screen("Press any key (except the power key) to exit...", 45, HEIGHT // 1.5)
     pygame.display.flip()
     wait_for_key()
 
@@ -87,7 +87,7 @@ while game_running:
                 sys.exit()
             elif event.key == pygame.K_LSHIFT:
                 start_screen()
-#    for 
+
     keys = pygame.key.get_pressed()
     platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
 #    platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
@@ -135,7 +135,7 @@ while game_running:
             current_level = 1
         else:
             ball_pos = [WIDTH // 2, HEIGHT // 2]
-            ball_speed = [random.uniform(6, 8), random.uniform(6, 8)]
+            ball_speed = [random.uniform(4, 6), random.uniform(4, 6)]
 
     screen.fill(BLACK)
     pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
@@ -154,10 +154,14 @@ while game_running:
     lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
-    speed_text = font.render(f"Speed: {ball_speed[0]}", True, WHITE)
-    speed_rect = speed_text.get_rect(topleft = (lives_rect.topright[0] + info_spacing, info_line_y))
-    pygame.draw.rect(screen, BLACK, speed_rect.inflate(10, 5))
-    screen.blit(speed_text, speed_rect)
+    speedx_text = font.render(f"x-Speed: {ball_speed[0]}", True, WHITE)
+    speedx_rect = speedx_text.get_rect(topleft = (lives_rect.topright[0] + info_spacing, info_line_y))
+    pygame.draw.rect(screen, BLACK, speedx_rect.inflate(10, 5))
+    screen.blit(speedx_text, speedx_rect)
+    speedy_text = font.render(f"y-Speed: {ball_speed[1]}", True, WHITE)
+    speedy_rect = speedy_text.get_rect(topleft = (speedx_rect.topright[0] + info_spacing, info_line_y))
+    pygame.draw.rect(screen, BLACK, speedy_rect.inflate(10, 5))
+    screen.blit(speedy_text, speedy_rect)
     pygame.display.flip()
     clock.tick(FPS)
         
