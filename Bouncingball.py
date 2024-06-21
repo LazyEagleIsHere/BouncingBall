@@ -5,7 +5,7 @@ pygame.init()
 display_info = pygame.display.Info()
 WIDTH, HEIGHT = display_info.current_w, display_info.current_h
 BALL_RADIUS = 20
-PLATFORM_WIDTH, PLATFORM_HEIGHT = 100, 20
+PLATFORM_WIDTH, PLATFORM_HEIGHT = 135, 20
 FPS = 100
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
@@ -18,9 +18,9 @@ pygame.display.set_caption('Bouncing Ball Game')
 font = pygame.font.Font(None, 36)
 clock = pygame.time.Clock()
 ball_pos = [WIDTH // 2, HEIGHT // 2]
-ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
+ball_speed = [random.uniform(4, 6), random.uniform(4, 6)]
 platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
-platform_speed = 10
+platform_speed = 13
 score = 0
 lives = 3
 current_level = 1
@@ -40,7 +40,6 @@ def game_over_screen():
     show_text_on_screen(f"Your final score: {score}", 30, HEIGHT // 2)
     show_text_on_screen("Press any key (except the power key) to restart...", 20, HEIGHT * 2 // 3)
     pygame.display.flip()
-    finished = True
     wait_for_key()
 
 def victory_screen():
@@ -49,7 +48,6 @@ def victory_screen():
     show_text_on_screen(f"You've won with a score of {score}", 30, HEIGHT // 2)
     show_text_on_screen("Press any key (except the power key) to exit...", 20, HEIGHT * 2 // 3)
     pygame.display.flip()
-    finished = True
     wait_for_key()
 
 def wait_for_key():
@@ -78,7 +76,7 @@ def change_platform_color():
 start_screen()
 game_running = True
 while game_running:
-#    show_text_on_screen(ball_speed, 30, HEIGHT // 6)
+    show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -99,22 +97,18 @@ while game_running:
     ball_pos[1] += ball_speed[1]
 
     if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
-        if (score % 2 == 0):
-            if (score % 8 == 0):
-                ball_speed[1] *= 1.65
-                platform_speed *= 1.5
-            else:
-                ball_speed[0] = -ball_speed[0] * 1.5
+        if (score % 2 == 0 and ball_speed[0] < 20 and ball_speed[0] > -20):
+            ball_speed[0] = -ball_speed[0] * 1.2
+            if (platform_speed < 22):
+                platform_speed *= 1.1
         else:
             ball_speed[0] = -ball_speed[0]
 
     if ball_pos[1] <= 0:
-        if (score % 2 == 0):
-            if (score % 8 == 0):
-                ball_speed[1] *= 1.65
-                platform_speed *= 1.5
-            else:
-                ball_speed[1] = -ball_speed[1] * 1.5
+        if (score % 2 == 0 and ball_speed[1] < 20 and ball_speed[1] > -20):
+            ball_speed[1] = -ball_speed[1] * 1.2
+            if (platform_speed < 22):
+                platform_speed *= 1.1
         else:
             ball_speed[1] = -ball_speed[1]
         
@@ -127,7 +121,7 @@ while game_running:
         current_level += 1
         platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
         ball_pos = [WIDTH // 2, HEIGHT // 2]
-        ball_speed = [random.uniform(ball_speed[0], ball_speed[1]), random.uniform(ball_speed[0], ball_speed[1])]
+#        ball_speed = [random.uniform(ball_speed[0], ball_speed[1]), random.uniform(ball_speed[0], ball_speed[1])]
         platform_color = change_platform_color()
 
     if ball_pos[1] >= HEIGHT:
@@ -141,7 +135,7 @@ while game_running:
             current_level = 1
         else:
             ball_pos = [WIDTH // 2, HEIGHT // 2]
-            ball_speed = [random.uniform(2, 4), random.uniform(2, 4)]
+            ball_speed = [random.uniform(6, 8), random.uniform(6, 8)]
 
     screen.fill(BLACK)
     pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
@@ -160,6 +154,10 @@ while game_running:
     lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
+    speed_text = font.render(f"Speed: {ball_speed[0]}", True, WHITE)
+    speed_rect = speed_text.get_rect(topleft = (lives_rect.topright[0] + info_spacing, info_line_y))
+    pygame.draw.rect(screen, BLACK, speed_rect.inflate(10, 5))
+    screen.blit(speed_text, speed_rect)
     pygame.display.flip()
     clock.tick(FPS)
         
