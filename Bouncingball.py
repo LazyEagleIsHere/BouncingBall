@@ -20,7 +20,8 @@ def main():
     font = pygame.font.Font(None, 36)
     clock = pygame.time.Clock()
     ball_pos = [WIDTH // 2, HEIGHT // 2]
-    ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
+    ball_speed = [random.uniform(4, -6), random.uniform(-4, 6)]
+    # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
     platform_speed = 13
     score = 0
@@ -113,12 +114,12 @@ def main():
                     platform_speed *= 1.1
             else:
                 ball_speed[1] = -ball_speed[1]
-            
-            
+
+
         if (platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT):
             ball_speed[1] = -ball_speed[1]
             score += 1
-        
+
         if score >= current_level * 10:
             current_level += 1
             platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
@@ -137,7 +138,7 @@ def main():
                 current_level = 1
             else:
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
-                ball_speed = [random.uniform(4, 6), random.uniform(4, 6)]
+                ball_speed = [random.uniform(4, -6), random.uniform(-4, 6)]
 
         screen.fill(BLACK)
         pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
@@ -166,6 +167,6 @@ def main():
         screen.blit(speedy_text, speedy_rect)
         pygame.display.flip()
         clock.tick(FPS)
-            
+
     pygame.quit()
 main()
