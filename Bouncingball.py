@@ -6,8 +6,8 @@ pygame.init()
 def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
-    BALL_RADIUS = 20
-    PLATFORM_WIDTH, PLATFORM_HEIGHT = 135, 20
+    BALL_RADIUS = 30
+    PLATFORM_WIDTH, PLATFORM_HEIGHT = 150, 20
     FPS = 100
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -16,20 +16,23 @@ def main():
     ORANGE = (255, 165, 0)
     LIGHT_BLUE = (173, 116, 233)
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen_color = BLACK
     pygame.display.set_caption('Bouncing Ball Game')
     font = pygame.font.Font(None, 36)
     clock = pygame.time.Clock()
     ball_pos = [WIDTH // 2, HEIGHT // 2]
-    ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
+    ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
+    # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
     platform_speed = 13
     score = 0
     lives = 3
     current_level = 1
     platform_color = ORANGE
+    ball_color = WHITE
 
     def start_screen():
-        screen.fill(BLACK)
+        screen.fill(screen_color)
         show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
         show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
         show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
@@ -73,11 +76,30 @@ def main():
         screen.blit(text_render, text_rect)
 
     def change_platform_color():
-        return (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
+        return (random.randint(110, 255), random.randint(110, 255), random.randint(110, 255))
+    
+    def change_ball_color():
+        return (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
+    
+    def change_screen_color():
+        return (random.randint(0, 50), random.randint(0, 50), random.randint(0, 50))
 
     start_screen()
     game_running = True
     while game_running:
+        if ball_speed[0] < 0:
+            if ball_speed[0] > -4:
+                ball_speed[0] = random.uniform(-4, -6)
+        if ball_speed[0] > 0:
+            if ball_speed[0] < 4:
+                ball_speed[0] = random.uniform(4, 6)
+        if ball_speed[1] < 0:
+            if ball_speed[1] > -4:
+                ball_speed[1] = random.uniform(-4, -6)
+        if ball_speed[1] > 0:
+            if ball_speed[1] < 4:
+                ball_speed[1] = random.uniform(4, 6)
+
         show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -99,32 +121,40 @@ def main():
         ball_pos[1] += ball_speed[1]
 
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
-            if (score % 2 == 0 and ball_speed[0] < 20 and ball_speed[0] > -20):
+            if ((score % 2 == 0 and score != 0) and ball_speed[0] < 20 and ball_speed[0] > -20):
                 ball_speed[0] = -ball_speed[0] * 1.2
                 if (platform_speed < 22):
                     platform_speed *= 1.1
             else:
                 ball_speed[0] = -ball_speed[0]
+            ball_color = change_ball_color()
+            screen_color = change_screen_color()
 
         if ball_pos[1] <= 0:
-            if (score % 2 == 0 and ball_speed[1] < 20 and ball_speed[1] > -20):
+            if ((score % 2 == 0 and score != 0) and ball_speed[1] < 20 and ball_speed[1] > -20):
                 ball_speed[1] = -ball_speed[1] * 1.2
                 if (platform_speed < 22):
                     platform_speed *= 1.1
             else:
                 ball_speed[1] = -ball_speed[1]
-            
-            
+            ball_color = change_ball_color()
+            screen_color = change_screen_color()
+
+
         if (platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT):
             ball_speed[1] = -ball_speed[1]
             score += 1
-        
+            ball_color = change_ball_color()
+            screen_color = change_screen_color()
+
         if score >= current_level * 10:
             current_level += 1
             platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
             ball_pos = [WIDTH // 2, HEIGHT // 2]
     #        ball_speed = [random.uniform(ball_speed[0], ball_speed[1]), random.uniform(ball_speed[0], ball_speed[1])]
             platform_color = change_platform_color()
+            ball_color = change_ball_color()
+            screen_color = change_screen_color()
 
         if ball_pos[1] >= HEIGHT:
             lives -= 1
@@ -137,10 +167,10 @@ def main():
                 current_level = 1
             else:
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
-                ball_speed = [random.uniform(4, 6), random.uniform(4, 6)]
+                ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
 
-        screen.fill(BLACK)
-        pygame.draw.circle(screen, WHITE, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
+        screen.fill(screen_color)
+        pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
         pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
         info_line_y = 10
         info_spacing = 75 
@@ -166,6 +196,6 @@ def main():
         screen.blit(speedy_text, speedy_rect)
         pygame.display.flip()
         clock.tick(FPS)
-            
+
     pygame.quit()
 main()
