@@ -121,40 +121,41 @@ def main():
         ball_pos[1] += ball_speed[1]
 
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
-            if ((score % 2 == 0 and score != 0) and ball_speed[0] < 20 and ball_speed[0] > -20):
+            if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
                 if (platform_speed < 22):
                     platform_speed *= 1.1
             else:
                 ball_speed[0] = -ball_speed[0]
             ball_color = change_ball_color()
-            screen_color = change_screen_color()
+            # screen_color = change_screen_color()
 
         if ball_pos[1] <= 0:
-            if ((score % 2 == 0 and score != 0) and ball_speed[1] < 20 and ball_speed[1] > -20):
+            if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
                 if (platform_speed < 22):
                     platform_speed *= 1.1
             else:
                 ball_speed[1] = -ball_speed[1]
             ball_color = change_ball_color()
-            screen_color = change_screen_color()
+            # screen_color = change_screen_color()
 
 
         if (platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT):
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
-            screen_color = change_screen_color()
+            # screen_color = change_screen_color()
 
         if score >= current_level * 10:
             current_level += 1
+            lives += 1
             platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
             ball_pos = [WIDTH // 2, HEIGHT // 2]
     #        ball_speed = [random.uniform(ball_speed[0], ball_speed[1]), random.uniform(ball_speed[0], ball_speed[1])]
             platform_color = change_platform_color()
             ball_color = change_ball_color()
-            screen_color = change_screen_color()
+            # screen_color = change_screen_color()
 
         if ball_pos[1] >= HEIGHT:
             lives -= 1
@@ -167,7 +168,10 @@ def main():
                 current_level = 1
             else:
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
-                ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
+                if current_level != 1:
+                    ball_speed = [(current_level - 1) * 10, -abs((current_level - 1) * 10)]
+                else:
+                    ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)) * 1.5, random.uniform(-4, -6) * 1.5]
 
         screen.fill(screen_color)
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
