@@ -7,7 +7,7 @@ def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
-    PLATFORM_WIDTH, PLATFORM_HEIGHT = 150, 20
+    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
     FPS = 100
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -21,9 +21,11 @@ def main():
     font = pygame.font.Font(None, 36)
     clock = pygame.time.Clock()
     ball_pos = [WIDTH // 2, HEIGHT // 2]
+    ball_speed = [0, 0]
     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
-    platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
+    platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
+    block = [random.uniform]
     platform_speed = 13
     score = 0
     lives = 3
@@ -35,26 +37,39 @@ def main():
         screen.fill(screen_color)
         show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
         show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
+        # pygame.draw.rect(screen, WHITE, [WIDTH // 2 - 75, HEIGHT // 2 + 100, 140, 65])
+        # sf = pygame.font.SysFont('Corbel', 60)
+        # text = sf.render('Start', True, BLACK)
+        # screen.blit(text, (WIDTH // 2 - 75, HEIGHT // 2 + 100))
         show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
         pygame.display.flip()
+        # while True:
+        #     for event in pygame.event.get():
+        #         mouse = pygame.mouse.get_pos()
+        #         if event.type == pygame.QUIT:
+        #             pygame.quit()
+        #             sys.exit()
+        #         elif event.type == pygame.MOUSEBUTTONDOWN:
+        #             if WIDTH // 2 <= mouse[0] <= WIDTH // 2 + 140 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 65:
+        #                 pygame.quit()
         wait_for_key()
 
-    def game_over_screen():
+    def end_screen():
         screen.fill(BLACK)
-        show_text_on_screen("Game Over", 100, HEIGHT // 4)
+        show_text_on_screen("Good Try!", 100, HEIGHT // 4)
         show_text_on_screen(f"Your final score: {score}", 50, HEIGHT // 2)
         show_text_on_screen("Press spacebar to restart...", 45, HEIGHT //1.5)
         pygame.display.flip()
         wait_for_key()
 
-    def victory_screen():
-        screen.fill(BLACK)
-        show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
-        show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
-        show_text_on_screen("Press Exc to exit...", 45, HEIGHT // 1.5)
-        pygame.display.flip()
-        wait_for_key()
-
+    # def victory_screen():
+    #     screen.fill(BLACK)
+    #     show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
+    #     show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
+    #     show_text_on_screen("Press Exc to exit...", 45, HEIGHT // 1.5)
+    #     pygame.display.flip()
+    #     wait_for_key()
+    
     def wait_for_key():
         waiting = True
         while waiting:
@@ -68,6 +83,10 @@ def main():
                     elif event.key == pygame.K_ESCAPE:
                         pygame.quit()
                         sys.exit()
+                # elif event.type == pygame.MOUSEBUTTONDOWN:
+                #     mouse = pygame.mouse.get_pos()
+                #     if (WIDTH // 2 - 75 <= mouse[0] <= WIDTH // 2 + 140 and HEIGHT // 2 + 100 <= mouse[1] <= HEIGHT // 2 + 65):
+                #         waiting == False
 
     def show_text_on_screen(text, font_size, y_position):
         font = pygame.font.Font(None, font_size)
@@ -113,10 +132,8 @@ def main():
                     main()
 
         keys = pygame.key.get_pressed()
-        platform_pos[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
-    #    platform_pos[1] += (keys[pygame.K_DOWN] - keys[pygame.K_UP]) * platform_speed
-        platform_pos[0] = max(0, min(platform_pos[0], WIDTH - PLATFORM_WIDTH))
-    #    platform_pos[1] = max(0, min(platform_pos[1], HEIGHT - PLATFORM_HEIGHT))
+        platform_pos1[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
+        platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
 
@@ -141,16 +158,40 @@ def main():
             # screen_color = change_screen_color()
 
 
-        if (platform_pos[0] <= ball_pos[0] <= platform_pos[0] + PLATFORM_WIDTH and platform_pos[1] <= ball_pos[1] <= platform_pos[1] + PLATFORM_HEIGHT):
+        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
         if score >= current_level * 10:
+            show_text_on_screen(f"Level Up!", 100, HEIGHT // 2 - 50)
+            counter, text = 3, '3'.rjust(3)
+            pygame.time.set_timer(pygame.USEREVENT, 1000)
+            font = pygame.font.SysFont('Consolas', 30)
+            run = True
+            while run:
+                for event in pygame.event.get():
+                    if event.type == pygame.USEREVENT:
+                        counter -= 1
+                        text = str(counter).rjust(3) if counter > 0 else run = False
+                    if event.type == pygame.QUIT:
+                        run = False
+                    if event.type == pygame.KEYDOWN:
+                        if event.key == pygame.K_ESCAPE:
+                            run = False
+                            pygame.quit()
+                            sys.exit()
+                screen.blit(font.render(text, True, BLACK, (32, 48)))
+                pygame.display.flip()
+                clock.tick(60)
             current_level += 1
             lives += 1
-            platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
+            platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
+            if PLATFORM_WIDTH1 < WIDTH // 2:
+                PLATFORM_WIDTH1 *= 1.25
+                PLATFORM_HEIGHT1 *= 1.05
+            BALL_RADIUS *= 1.15
             ball_pos = [WIDTH // 2, HEIGHT // 2]
     #        ball_speed = [random.uniform(ball_speed[0], ball_speed[1]), random.uniform(ball_speed[0], ball_speed[1])]
             platform_color = change_platform_color()
@@ -159,9 +200,9 @@ def main():
 
         if ball_pos[1] >= HEIGHT:
             lives -= 1
-            platform_pos = [WIDTH // 2 - PLATFORM_WIDTH // 2, HEIGHT - PLATFORM_HEIGHT - 10]
+            platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
-                game_over_screen()
+                end_screen()
                 start_screen()
                 score = 0
                 lives = 3
@@ -175,7 +216,7 @@ def main():
 
         screen.fill(screen_color)
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
-        pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), PLATFORM_WIDTH, PLATFORM_HEIGHT))
+        pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]), PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
         info_line_y = 10
         info_spacing = 75 
         score_text = font.render(f"Score: {score}", True, WHITE)
