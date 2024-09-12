@@ -136,8 +136,11 @@ def main():
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
 
+        if (ball_pos[0] == 0 and ball_pos[1] == 0) or (ball_pos[0] == WIDTH and ball_pos[1] == 0):
+            BALL_RADIUS = 1
+
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
-            BALL_RADIUS = random.uniform(1, 30)
+            BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
                 if (platform_speed < 22):
@@ -148,7 +151,7 @@ def main():
             # screen_color = change_screen_color()
 
         if ball_pos[1] <= 0:
-            BALL_RADIUS = random.uniform(1, 30)
+            BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
                 if (platform_speed < 22):
@@ -160,14 +163,14 @@ def main():
 
 
         if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
-            BALL_RADIUS = random.uniform(1, 30)
+            BALL_RADIUS = random.uniform(25, 45)
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
         if score >= current_level * 10:
-            BALL_RADIUS = random.uniform(1, 30)
+            BALL_RADIUS = random.uniform(25, 45)
             # show_text_on_screen(f"Level Up!", 100, HEIGHT // 2 - 50)
             # counter, text = 3, '3'.rjust(3)
             # pygame.time.set_timer(pygame.USEREVENT, 1000)
@@ -202,7 +205,7 @@ def main():
             # screen_color = change_screen_color()
 
         if ball_pos[1] >= HEIGHT:
-            BALL_RADIUS = random.uniform(1, 30)
+            BALL_RADIUS = random.uniform(25, 45)
             lives -= 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
