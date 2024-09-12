@@ -25,7 +25,6 @@ def main():
     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    block = [random.uniform]
     platform_speed = 13
     score = 0
     lives = 3
@@ -138,6 +137,7 @@ def main():
         ball_pos[1] += ball_speed[1]
 
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
+            BALL_RADIUS = random.uniform(1, 30)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
                 if (platform_speed < 22):
@@ -148,6 +148,7 @@ def main():
             # screen_color = change_screen_color()
 
         if ball_pos[1] <= 0:
+            BALL_RADIUS = random.uniform(1, 30)
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
                 if (platform_speed < 22):
@@ -159,36 +160,38 @@ def main():
 
 
         if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
+            BALL_RADIUS = random.uniform(1, 30)
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
         if score >= current_level * 10:
-            show_text_on_screen(f"Level Up!", 100, HEIGHT // 2 - 50)
-            counter, text = 3, '3'.rjust(3)
-            pygame.time.set_timer(pygame.USEREVENT, 1000)
-            font = pygame.font.SysFont('Consolas', 30)
-            run = True
-            while run:
-                for event in pygame.event.get():
-                    if event.type == pygame.USEREVENT:
-                        counter -= 1
-                        text = str(counter).rjust(3) if counter > 0 else run = False
-                    if event.type == pygame.QUIT:
-                        run = False
-                    if event.type == pygame.KEYDOWN:
-                        if event.key == pygame.K_ESCAPE:
-                            run = False
-                            pygame.quit()
-                            sys.exit()
-                screen.blit(font.render(text, True, BLACK, (32, 48)))
-                pygame.display.flip()
-                clock.tick(60)
+            BALL_RADIUS = random.uniform(1, 30)
+            # show_text_on_screen(f"Level Up!", 100, HEIGHT // 2 - 50)
+            # counter, text = 3, '3'.rjust(3)
+            # pygame.time.set_timer(pygame.USEREVENT, 1000)
+            # font = pygame.font.SysFont('Consolas', 30)
+            # run = True
+            # while run:
+            #     for event in pygame.event.get():
+            #         if event.type == pygame.USEREVENT:
+            #             counter -= 1
+            #             text = str(counter).rjust(3) if counter > 0 else run = False
+            #         if event.type == pygame.QUIT:
+            #             run = False
+            #         if event.type == pygame.KEYDOWN:
+            #             if event.key == pygame.K_ESCAPE:
+            #                 run = False
+            #                 pygame.quit()
+            #                 sys.exit()
+            #     screen.blit(font.render(text, True, BLACK, (32, 48)))
+            #     pygame.display.flip()
+            #     clock.tick(60)
             current_level += 1
             lives += 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-            if PLATFORM_WIDTH1 < WIDTH // 2:
+            if PLATFORM_WIDTH1 < WIDTH // 2 - 1000:
                 PLATFORM_WIDTH1 *= 1.25
                 PLATFORM_HEIGHT1 *= 1.05
             BALL_RADIUS *= 1.15
@@ -199,6 +202,7 @@ def main():
             # screen_color = change_screen_color()
 
         if ball_pos[1] >= HEIGHT:
+            BALL_RADIUS = random.uniform(1, 30)
             lives -= 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
