@@ -69,9 +69,6 @@ def main():
     #     pygame.display.flip()
     #     wait_for_key()
     
-    def ball():
-        BALL_RADIUS = random.uniform(25, 45)
-    
     def wait_for_key():
         waiting = True
         while waiting:
