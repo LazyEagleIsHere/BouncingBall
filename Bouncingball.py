@@ -25,7 +25,7 @@ def main():
     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    platform_speed = 13
+    platform_speed = 5
     score = 0
     lives = 3
     current_level = 1
@@ -104,8 +104,37 @@ def main():
     
     def change_screen_color():
         return (random.randint(0, 50), random.randint(0, 50), random.randint(0, 50))
-
+    
+    def countdown():
+        font = pygame.font.SysFont(None, 100)
+        counter = 3
+        text = font.render(str(counter), True, (0, 128, 0))
+        timer_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(timer_event, 1000)
+        run = True
+        while run:
+            clock.tick(60)
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    run = False
+                elif event.type == timer_event:
+                    counter -= 1
+                    text = font.render(str(counter), True, (0, 128, 0))
+                    if counter == 0:
+                        pygame.time.set_timer(timer_event, 0)
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+                        run = False
+        text_rect = text.get_rect(center = screen.get_rect().center)
+        screen.blit(text, text_rect)
+        pygame.display.flip()
+    
+    def ball():
+        BALL_RADIUS = random.uniform(25, 45)
     start_screen()
+    # countdown()
     game_running = True
     while game_running:
         if ball_speed[0] < 0:
@@ -138,9 +167,6 @@ def main():
         platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
-
-        if (ball_pos[0] == 0 and ball_pos[1] == 0) or (ball_pos[0] == WIDTH and ball_pos[1] == 0):
-            BALL_RADIUS = 1
 
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
             ball()
