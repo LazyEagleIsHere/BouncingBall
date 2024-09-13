@@ -25,7 +25,7 @@ def main():
     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    platform_speed = 13
+    platform_speed = 5
     score = 0
     lives = 3
     current_level = 1
