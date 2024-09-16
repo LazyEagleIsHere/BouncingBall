@@ -63,9 +63,9 @@ def main():
 
     def victory_screen():
         screen.fill(BLACK)
-        show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
+        show_text_on_screen("Congratulation!", 100, HEIGHT // 4)
         show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
-        show_text_on_screen("Press Exc to exit or press spacebar to restart", 45, HEIGHT // 1.5)
+        show_text_on_screen("Press spacebar to restart", 45, HEIGHT // 1.5)
         pygame.display.flip()
         wait_for_key()
     
@@ -218,7 +218,7 @@ def main():
             #     pygame.display.flip()
             #     clock.tick(60)
             current_level += 1
-            PLATFORM_HEIGHT1 *= 1.5
+            PLATFORM_HEIGHT1 *= 1.15
             lives += 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if PLATFORM_WIDTH1 < WIDTH // 2 - 1000:
