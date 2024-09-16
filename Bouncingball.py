@@ -25,7 +25,7 @@ def main():
     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    platform_speed = 5
+    platform_speed = 11.5
     score = 0
     lives = 3
     current_level = 1
@@ -61,13 +61,13 @@ def main():
         pygame.display.flip()
         wait_for_key()
 
-    # def victory_screen():
-    #     screen.fill(BLACK)
-    #     show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
-    #     show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
-    #     show_text_on_screen("Press Exc to exit...", 45, HEIGHT // 1.5)
-    #     pygame.display.flip()
-    #     wait_for_key()
+    def victory_screen():
+        screen.fill(BLACK)
+        show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
+        show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
+        show_text_on_screen("Press Exc to exit or press spacebar to restart", 45, HEIGHT // 1.5)
+        pygame.display.flip()
+        wait_for_key()
     
     def wait_for_key():
         waiting = True
@@ -218,6 +218,7 @@ def main():
             #     pygame.display.flip()
             #     clock.tick(60)
             current_level += 1
+            PLATFORM_HEIGHT1 *= 1.5
             lives += 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if PLATFORM_WIDTH1 < WIDTH // 2 - 1000:
@@ -229,7 +230,7 @@ def main():
             platform_color = change_platform_color()
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
-
+        
         if ball_pos[1] >= HEIGHT:
             ball()
             lives -= 1
@@ -246,6 +247,9 @@ def main():
                     ball_speed = [(current_level - 1) * 10, -abs((current_level - 1) * 10)]
                 else:
                     ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)) * 1.5, random.uniform(-4, -6) * 1.5]
+
+        if score == 40:
+            victory_screen()
 
         screen.fill(screen_color)
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
