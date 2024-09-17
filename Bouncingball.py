@@ -130,6 +130,7 @@ def main():
     
     def ball():
         BALL_RADIUS = random.uniform(25, 45)
+    
     start_screen()
     # countdown()
     game_running = True
@@ -161,7 +162,11 @@ def main():
                     main()
 
         keys = pygame.key.get_pressed()
-        platform_pos1[0] += (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
+        platform_pos1[0] += ((keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed) - ((keys[pygame.K_a] - keys[pygame.K_d]) * platform_speed)
+        if keys[pygame.K_RIGHT] and keys[pygame.K_d]:
+            platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
+        if keys[pygame.K_LEFT] and keys[pygame.K_a]:
+            platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
         platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
