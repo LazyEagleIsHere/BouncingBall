@@ -12,7 +12,7 @@ def main():
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)
-    YELLOW = (255, 255, 0)
+    GRAY = (200, 200, 200)
     ORANGE = (255, 165, 0)
     LIGHT_BLUE = (173, 116, 233)
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -33,15 +33,38 @@ def main():
     ball_color = WHITE
 
     def start_screen():
-        screen.fill(screen_color)
-        show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
-        show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
+        i = 0
+        # screen.fill(screen_color)
+        start = True
+        while start:
+            screen.fill(rainbow_color(i))
+            i = (i + 1) % (126 * 6)
+            show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
+            show_text_on_screen("Press spacebar twice to start...", 50, HEIGHT // 2)
         # pygame.draw.rect(screen, WHITE, [WIDTH // 2 - 75, HEIGHT // 2 + 100, 140, 65])
         # sf = pygame.font.SysFont('Corbel', 60)
         # text = sf.render('Start', True, BLACK)
         # screen.blit(text, (WIDTH // 2 - 75, HEIGHT // 2 + 100))
-        show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
-        pygame.display.flip()
+            show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
+            show_text_on_screen("Your mission is to get 40 points", 100, HEIGHT // 1.2)
+            pygame.display.flip()
+            # keys = pygame.key.get_pressed()
+            # if keys[pygame.K_ESCAPE]:
+            #     start = False
+            #     pygame.quit()
+            #     sys.exit()
+            # if keys[pygame.K_SPACE]:
+            #     start = False
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        start = False
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
         # while True:
         #     for event in pygame.event.get():
         #         mouse = pygame.mouse.get_pos()
@@ -52,8 +75,59 @@ def main():
         #             if WIDTH // 2 <= mouse[0] <= WIDTH // 2 + 140 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 65:
         #                 pygame.quit()
         wait_for_key()
+    
+    def rainbow_color(value):
+        step = (value // 126) % 6
+        pos = value % 126
+        if step == 0:
+            return (125, pos, 0)
+        if step == 1:
+            return (125 - pos, 125, 0)
+        if step == 2:
+            return (0, 125, pos)
+        if step == 3:
+            return (0, 125-pos, 125)
+        if step == 4:
+            return (pos, 0, 125)
+        if step == 5:
+            return (125, 0, 125-pos)
+        
+        # step = (value // 256) % 6
+        # pos = value % 256
+        # if step == 0:
+        #     return (255, pos, 0)
+        # if step == 1:
+        #     return (255-pos, 255, 0)
+        # if step == 2:
+        #     return (0, 255, pos)
+        # if step == 3:
+        #     return (0, 255-pos, 255)
+        # if step == 4:
+        #     return (pos, 0, 255)
+        # if step == 5:
+        #     return (255, 0, 255-pos)
 
     def end_screen():
+        # win = True
+        # i = 0
+        # while win:
+        #     screen.fill(rainbow_color(i))
+        #     i = (i + 1) % (256 * 6)
+        #     show_text_on_screen("Congratulation!", 100, HEIGHT // 4)
+        #     show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
+        #     show_text_on_screen("Press spacebar to restart", 45, HEIGHT // 1.5)
+        #     pygame.display.flip()
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             pygame.quit()
+        #             sys.exit()
+        #         elif event.type == pygame.KEYDOWN:
+        #             if event.key == pygame.K_SPACE:
+        #                 win = False
+        #             elif event.key == pygame.K_ESCAPE:
+        #                 pygame.quit()
+        #                 sys.exit()
+            # wait_for_key()
         screen.fill(BLACK)
         show_text_on_screen("Good Try!", 100, HEIGHT // 4)
         show_text_on_screen(f"Your final score: {score}", 50, HEIGHT // 2)
@@ -62,12 +136,26 @@ def main():
         wait_for_key()
 
     def victory_screen():
-        screen.fill(BLACK)
-        show_text_on_screen("Congratulation!", 100, HEIGHT // 4)
-        show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
-        show_text_on_screen("Press spacebar to restart", 45, HEIGHT // 1.5)
-        pygame.display.flip()
-        wait_for_key()
+        win = True
+        i = 0
+        while win:
+            screen.fill(rainbow_color(i))
+            i = (i + 1) % (126 * 6)
+            show_text_on_screen("Congratulation!", 100, HEIGHT // 4)
+            show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
+            show_text_on_screen("Press spacebar to restart", 45, HEIGHT // 1.5)
+            pygame.display.flip()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        win = False
+                    elif event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        sys.exit()
+        # wait_for_key()
     
     def wait_for_key():
         waiting = True
@@ -89,9 +177,10 @@ def main():
 
     def show_text_on_screen(text, font_size, y_position):
         font = pygame.font.Font(None, font_size)
-        text_render = font.render(text, True, WHITE)
+        text_render = font.render(text, True, GRAY)
         text_rect = text_render.get_rect(center=(WIDTH // 2, y_position))
         screen.blit(text_render, text_rect)
+            
 
     def change_platform_color():
         return (random.randint(110, 255), random.randint(110, 255), random.randint(110, 255))
