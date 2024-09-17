@@ -22,7 +22,7 @@ def main():
     clock = pygame.time.Clock()
     ball_pos = [WIDTH // 2, HEIGHT // 2]
     ball_speed = [0, 0]
-    ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(-4, -6)), random.uniform(-4, -6)]
+    ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
     platform_speed = 11.5
@@ -134,18 +134,19 @@ def main():
     # countdown()
     game_running = True
     while game_running:
-        if ball_speed[0] < 0:
-            if ball_speed[0] > -4:
-                ball_speed[0] = random.uniform(-4, -6)
-        if ball_speed[0] > 0:
-            if ball_speed[0] < 4:
-                ball_speed[0] = random.uniform(4, 6)
-        if ball_speed[1] < 0:
-            if ball_speed[1] > -4:
-                ball_speed[1] = random.uniform(-4, -6)
-        if ball_speed[1] > 0:
-            if ball_speed[1] < 4:
-                ball_speed[1] = random.uniform(4, 6)
+        if 0 < ball_speed[0] < 6:
+            ball_speed[0] = random.uniform(6, 8)
+        if -6 < ball_speed[0] < 0:
+            ball_speed[0] = random.uniform(-6, -8)
+        if ball_speed[0] == 0:
+            ball_speed[0] = random.uniform(-8, 8)
+        
+        if 0 < ball_speed[1] < 6:
+            ball_speed[1] = random.uniform(6, 8)
+        if -6 < ball_speed[1] < 0:
+            ball_speed[1] = random.uniform(-6, -8)
+        if ball_speed[1] == 0:
+            ball_speed[1] = random.uniform(-8, 8)
 
         show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
         for event in pygame.event.get():
@@ -166,7 +167,7 @@ def main():
         ball_pos[1] += ball_speed[1]
 
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
-            ball()
+            BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
                 if (platform_speed < 22):
@@ -177,7 +178,7 @@ def main():
             # screen_color = change_screen_color()
 
         if ball_pos[1] <= 0:
-            ball()
+            BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
                 if (platform_speed < 22):
@@ -188,15 +189,15 @@ def main():
             # screen_color = change_screen_color()
 
 
-        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
-            ball()
+        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
+            BALL_RADIUS = random.uniform(25, 45)
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
         if score >= current_level * 10:
-            ball()
+            BALL_RADIUS = random.uniform(25, 45)
             # show_text_on_screen(f"Level Up!", 100, HEIGHT // 2 - 50)
             # counter, text = 3, '3'.rjust(3)
             # pygame.time.set_timer(pygame.USEREVENT, 1000)
@@ -232,7 +233,7 @@ def main():
             # screen_color = change_screen_color()
         
         if ball_pos[1] >= HEIGHT:
-            ball()
+            BALL_RADIUS = random.uniform(25, 45)
             lives -= 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
@@ -253,7 +254,7 @@ def main():
 
         screen.fill(screen_color)
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
-        pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]), PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
+        pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
         info_line_y = 10
         info_spacing = 75 
         score_text = font.render(f"Score: {score}", True, WHITE)
