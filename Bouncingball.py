@@ -7,6 +7,7 @@ def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
+    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, HEIGHT
     PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
     FPS = 100
     BLACK = (0, 0, 0)
@@ -25,7 +26,7 @@ def main():
     ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    platform_speed = 11.5
+    platform_speed = 10
     score = 0
     lives = 3
     current_level = 1
@@ -48,6 +49,7 @@ def main():
             show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
             show_text_on_screen("Your mission is to get 40 points", 100, HEIGHT // 1.2)
             pygame.display.flip()
+            platform_speed = 10
             # keys = pygame.key.get_pressed()
             # if keys[pygame.K_ESCAPE]:
             #     start = False
@@ -129,7 +131,7 @@ def main():
         #                 sys.exit()
             # wait_for_key()
         screen.fill(BLACK)
-        show_text_on_screen("Good Try!", 100, HEIGHT // 4)
+        show_text_on_screen("Good Try! :)", 100, HEIGHT // 4)
         show_text_on_screen(f"Your final score: {score}", 50, HEIGHT // 2)
         show_text_on_screen("Press spacebar to restart...", 45, HEIGHT //1.5)
         pygame.display.flip()
@@ -141,9 +143,9 @@ def main():
         while win:
             screen.fill(rainbow_color(i))
             i = (i + 1) % (126 * 6)
-            show_text_on_screen("Congratulation!", 100, HEIGHT // 4)
-            show_text_on_screen(f"You've won with a score of {score}", 50, HEIGHT // 2)
-            show_text_on_screen("Press spacebar to restart", 45, HEIGHT // 1.5)
+            show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
+            show_text_on_screen("You Win! :D", 50, HEIGHT // 2)
+            show_text_on_screen("Press spacebar to restart...", 45, HEIGHT // 1.5)
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -222,6 +224,7 @@ def main():
     
     start_screen()
     # countdown()
+    platform_speed = 10
     game_running = True
     while game_running:
         if 0 < ball_speed[0] < 6:
@@ -332,7 +335,7 @@ def main():
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
                 end_screen()
-                start_screen()
+                main()
                 score = 0
                 lives = 3
                 current_level = 1
@@ -345,6 +348,7 @@ def main():
 
         if score == 40:
             victory_screen()
+            main()
 
         screen.fill(screen_color)
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
