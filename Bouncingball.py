@@ -41,7 +41,7 @@ def main():
             screen.fill(rainbow_color(i))
             i = (i + 1) % (126 * 6)
             show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
-            show_text_on_screen("Press spacebar twice to start...", 50, HEIGHT // 2)
+            show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
         # pygame.draw.rect(screen, WHITE, [WIDTH // 2 - 75, HEIGHT // 2 + 100, 140, 65])
         # sf = pygame.font.SysFont('Corbel', 60)
         # text = sf.render('Start', True, BLACK)
@@ -76,7 +76,7 @@ def main():
         #         elif event.type == pygame.MOUSEBUTTONDOWN:
         #             if WIDTH // 2 <= mouse[0] <= WIDTH // 2 + 140 and HEIGHT // 2 <= mouse[1] <= HEIGHT // 2 + 65:
         #                 pygame.quit()
-        wait_for_key()
+        # wait_for_key()
     
     def rainbow_color(value):
         step = (value // 126) % 6
