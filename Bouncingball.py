@@ -22,7 +22,6 @@ def main():
     font = pygame.font.Font(None, 36)
     clock = pygame.time.Clock()
     ball_pos = [WIDTH // 2, HEIGHT // 2]
-    ball_speed = [0, 0]
     ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
@@ -32,6 +31,11 @@ def main():
     current_level = 1
     platform_color = ORANGE
     ball_color = WHITE
+    background_colour = 125
+    # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
+    # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
+    aston_width, aston_height = WIDTH, 30
+    aston_pos = [0, HEIGHT // 2 + 100]
 
     def start_screen():
         i = 0
@@ -39,7 +43,7 @@ def main():
         start = True
         while start:
             screen.fill(rainbow_color(i))
-            i = (i + 1) % (126 * 6)
+            i = (i + 1) % ((background_colour + 1) * 6)
             show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
             show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
         # pygame.draw.rect(screen, WHITE, [WIDTH // 2 - 75, HEIGHT // 2 + 100, 140, 65])
@@ -82,17 +86,17 @@ def main():
         step = (value // 126) % 6
         pos = value % 126
         if step == 0:
-            return (125, pos, 0)
+            return (background_colour, pos, 0)
         if step == 1:
-            return (125 - pos, 125, 0)
+            return (background_colour - pos, background_colour, 0)
         if step == 2:
-            return (0, 125, pos)
+            return (0, background_colour, pos)
         if step == 3:
-            return (0, 125-pos, 125)
+            return (0, background_colour-pos, background_colour)
         if step == 4:
-            return (pos, 0, 125)
+            return (pos, 0, background_colour)
         if step == 5:
-            return (125, 0, 125-pos)
+            return (background_colour, 0, background_colour-pos)
         
         # step = (value // 256) % 6
         # pos = value % 256
@@ -142,7 +146,7 @@ def main():
         i = 0
         while win:
             screen.fill(rainbow_color(i))
-            i = (i + 1) % (126 * 6)
+            i = (i + 1) % ((background_colour + 1) * 6)
             show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
             show_text_on_screen("You Win! :D", 50, HEIGHT // 2)
             show_text_on_screen("Press spacebar to restart...", 45, HEIGHT // 1.5)
@@ -262,8 +266,14 @@ def main():
         platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
+        
+        if (aston_pos[0] <= ball_pos[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
+            ball_speed[1] = -ball_speed[1]
+        
+        # if (aston_pos[0] <= ball_speed[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
+        #     ball_speed[1] = -ball_speed[1]
 
-        if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
+        if ball_pos[0] + BALL_RADIUS <= 0 or ball_pos[0] + BALL_RADIUS >= WIDTH:
             BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
@@ -274,7 +284,7 @@ def main():
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
-        if ball_pos[1] <= 0:
+        if ball_pos[1] + BALL_RADIUS <= 0:
             BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
@@ -286,8 +296,18 @@ def main():
             # screen_color = change_screen_color()
 
 
-        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] <= platform_pos1[1] + PLATFORM_HEIGHT1):
+        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] + BALL_RADIUS <= platform_pos1[1] + PLATFORM_HEIGHT1):
             BALL_RADIUS = random.uniform(25, 45)
+            if (keys[pygame.K_LEFT] and keys[pygame.K_a]):
+                if (ball_speed[0] > 0):
+                    ball_speed -= (platform_speed / 3)
+                else:
+                    ball_speed += (platform_speed / 3)
+            if (keys[pygame.K_RIGHT] and keys[pygame.K_d]):
+                if (ball_speed[0] > 0):
+                    ball_speed[0] += (platform_speed / 2.5)
+                else:
+                    ball_speed[0] -= (platform_speed / 2.25)
             ball_speed[1] = -ball_speed[1]
             score += 1
             ball_color = change_ball_color()
@@ -329,7 +349,7 @@ def main():
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
         
-        if ball_pos[1] >= HEIGHT:
+        if ball_pos[1] + BALL_RADIUS >= HEIGHT:
             BALL_RADIUS = random.uniform(25, 45)
             lives -= 1
             platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
@@ -351,6 +371,7 @@ def main():
             main()
 
         screen.fill(screen_color)
+        pygame.draw.rect(screen, WHITE, (int(aston_pos[0]), int(aston_pos[1]), aston_width, aston_height))
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
         pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
         info_line_y = 10
@@ -375,6 +396,11 @@ def main():
         speedy_rect = speedy_text.get_rect(topleft = (speedx_rect.topright[0] + info_spacing, info_line_y))
         pygame.draw.rect(screen, BLACK, speedy_rect.inflate(10, 5))
         screen.blit(speedy_text, speedy_rect)
+        # pos_text = font.render(f"{aston_pos[0]}", True, WHITE)
+        # pos_rect = pos_text.get_rect(topleft = (speedy_rect.topright[0] + info_spacing, info_line_y))
+        # pygame.draw.rect(screen, BLACK, pos_rect.inflate(10, 5))
+        # screen.blit(pos_text, pos_rect)
+        # pygame.draw.circle(screen, ball_color, (int(aston_pos[0]), int(aston_pos[1])), 10)
         pygame.display.flip()
         clock.tick(FPS)
 
