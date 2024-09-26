@@ -32,10 +32,10 @@ def main():
     platform_color = ORANGE
     ball_color = WHITE
     background_colour = 125
-    # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
-    # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
-    aston_width, aston_height = WIDTH, 30
-    aston_pos = [0, HEIGHT // 2 + 100]
+    aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
+    aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
+    # aston_width, aston_height = WIDTH, 30
+    # aston_pos = [0, HEIGHT // 2 - 100]
 
     def start_screen():
         i = 0
@@ -267,13 +267,13 @@ def main():
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
         
-        if (aston_pos[0] <= ball_pos[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
-            ball_speed[1] = -ball_speed[1]
-        
-        # if (aston_pos[0] <= ball_speed[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
+        # if (aston_pos[0] <= ball_pos[0] - BALL_RADIUS <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
         #     ball_speed[1] = -ball_speed[1]
+        
+        if (aston_pos[0] <= ball_pos[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height + BALL_RADIUS * 2):
+            ball_speed[1] = -ball_speed[1]
 
-        if ball_pos[0] + BALL_RADIUS <= 0 or ball_pos[0] + BALL_RADIUS >= WIDTH:
+        if ball_pos[0] - BALL_RADIUS <= 0 or ball_pos[0] + BALL_RADIUS >= WIDTH:
             BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.2
@@ -284,7 +284,7 @@ def main():
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
-        if ball_pos[1] + BALL_RADIUS <= 0:
+        if ball_pos[1] - BALL_RADIUS <= 0:
             BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
                 ball_speed[1] = -ball_speed[1] * 1.2
