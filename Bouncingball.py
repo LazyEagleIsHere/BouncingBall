@@ -4,7 +4,6 @@ import random
 
 pygame.init()
 
-
 def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
@@ -36,8 +35,9 @@ def main():
     background_colour = 125
     # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
     # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
-    aston_width, aston_height = WIDTH, 30
+    aston_width, aston_height = 250, 30
     aston_pos = [0, HEIGHT // 2 - 100]
+    aston_dir = 0
 
     def start_screen():
         i = 0
@@ -245,7 +245,16 @@ def main():
             ball_speed[1] = random.uniform(-6, -8)
         if ball_speed[1] == 0:
             ball_speed[1] = random.uniform(-8, 8)
-
+        
+        if (aston_dir == 0):
+            aston_pos[0] += 2
+            if (aston_pos[0] == WIDTH - aston_width):
+                aston_dir = 1
+        elif (aston_dir == 1):
+            aston_pos[0] -= 2
+            if (aston_pos[0] == 0):
+                aston_dir = 0
+        
         show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
