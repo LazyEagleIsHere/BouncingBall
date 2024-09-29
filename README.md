@@ -1,3 +1,3 @@
 # BouncingBall
-**A self-made game**\n
+**A self-made game**
 ******I WILL NEVER ADD COMMENTS******
