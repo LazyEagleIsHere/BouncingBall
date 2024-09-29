@@ -26,7 +26,7 @@ def main():
     ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     # ball_speed = [random.uniform(random.uniform(4, 6), random.uniform(4, 6)), random.uniform(random.uniform(-4, -6), random.uniform(-4, -6))]
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-    platform_speed = 10
+    platform_speed = 12
     score = 0
     lives = 3
     current_level = 1
@@ -36,6 +36,7 @@ def main():
     # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
     # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
     aston_width, aston_height = 250, 30
+    # aston_width, aston_height = WIDTH, 30
     aston_pos = [0, HEIGHT // 2 - 100]
     aston_dir = 0
     good = 0
@@ -113,7 +114,6 @@ def main():
         # wait_for_key()
 
     def wait_for_key():
-        FPS -= ball_speed
         waiting = True
         while waiting:
             for event in pygame.event.get():
@@ -212,14 +212,25 @@ def main():
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
         
-        if ((aston_pos[0] <= ball_pos[0] + BALL_RADIUS + 10 <= aston_pos[0] + aston_width + BALL_RADIUS + 20) and aston_pos[1] <= ball_pos[1] <= aston_pos[1] + aston_height):
-            ball_speed[0] = -ball_speed[0]
-            if (aston_dir == 0):
-                aston_dir = 1
-            else:
-                aston_dir = 0
+        # if ((aston_pos[0] <= ball_pos[0] + BALL_RADIUS <= aston_pos[0] + aston_width + BALL_RADIUS + 20) and aston_pos[1] - BALL_RADIUS <= ball_pos[1] <= aston_pos[1] + aston_height + BALL_RADIUS):
+        #     ball_speed[0] = -ball_speed[0]
+        if ((ball_pos[0] == aston_pos[0] and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height)) or 
+            (ball_pos[0] == aston_pos[0] + aston_width and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height))):
+            ball_pos[1] -= 5
+            ball_speed[1] = -ball_speed[1]
 
-        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] - BALL_RADIUS <= ball_pos[1] <= aston_pos[1] + aston_height + BALL_RADIUS):
+            if (aston_dir == 0):
+                if (ball_speed[0] > 0):
+                    aston_pos[0] += ball_speed[0] / 1.1
+                else:
+                    aston_dir = 1
+            else:
+                if (ball_speed[0] < 0):
+                    aston_pos[0] -= ball_speed[0] / 1.1
+                else:
+                    aston_dir = 0
+
+        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] - BALL_RADIUS <= ball_pos[1] + 10 <= aston_pos[1] + aston_height + BALL_RADIUS):
             ball_speed[1] = -ball_speed[1]
         
         if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= WIDTH:
@@ -233,11 +244,11 @@ def main():
             # screen_color = change_screen_color()
         
         if (aston_dir == 0):
-            aston_pos[0] += 10
+            aston_pos[0] += 5
             if (aston_pos[0] == WIDTH - aston_width):
                 aston_dir = 1
         elif (aston_dir == 1):
-            aston_pos[0] -= 10
+            aston_pos[0] -= 5
             if (aston_pos[0] == 0):
                 aston_dir = 0
 
@@ -251,7 +262,7 @@ def main():
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
 
-        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] + BALL_RADIUS + 5 <= platform_pos1[1] + PLATFORM_HEIGHT1):
+        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] + BALL_RADIUS <= platform_pos1[1] + PLATFORM_HEIGHT1):
             if (keys[pygame.K_LEFT] and keys[pygame.K_a]):
                 if (ball_speed[0] > 0):
                     ball_speed -= (platform_speed / 3)
