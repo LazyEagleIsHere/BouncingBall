@@ -40,6 +40,7 @@ def main():
     aston_dir = 0
     good = 0
     bad = 1
+    lock = False
 
     def start_screen():
         i = 0
@@ -189,15 +190,6 @@ def main():
         if ball_speed[1] == 0:
             ball_speed[1] = random.uniform(-8, 8)
         
-        if (aston_dir == 0):
-            aston_pos[0] += 10
-            if (aston_pos[0] == WIDTH - aston_width):
-                aston_dir = 1
-        elif (aston_dir == 1):
-            aston_pos[0] -= 10
-            if (aston_pos[0] == 0):
-                aston_dir = 0
-        
         show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -219,12 +211,16 @@ def main():
         platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
-
-        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and (aston_pos[1] == ball_pos[1] + BALL_RADIUS or aston_pos[1] + aston_height == ball_pos[1] - BALL_RADIUS)):
-            ball_speed[1] = -ball_speed[1]
         
-        if ((aston_pos[0] == ball_pos[0] or aston_pos[0] + aston_width == ball_pos[0] - BALL_RADIUS) and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
+        if ((aston_pos[0] <= ball_pos[0] + BALL_RADIUS + 10 <= aston_pos[0] + aston_width + BALL_RADIUS + 20) and aston_pos[1] <= ball_pos[1] <= aston_pos[1] + aston_height):
             ball_speed[0] = -ball_speed[0]
+            if (aston_dir == 0):
+                aston_dir = 1
+            else:
+                aston_dir = 0
+
+        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] - BALL_RADIUS <= ball_pos[1] <= aston_pos[1] + aston_height + BALL_RADIUS):
+            ball_speed[1] = -ball_speed[1]
         
         if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= WIDTH:
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
@@ -235,6 +231,15 @@ def main():
                 ball_speed[0] = -ball_speed[0]
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
+        
+        if (aston_dir == 0):
+            aston_pos[0] += 10
+            if (aston_pos[0] == WIDTH - aston_width):
+                aston_dir = 1
+        elif (aston_dir == 1):
+            aston_pos[0] -= 10
+            if (aston_pos[0] == 0):
+                aston_dir = 0
 
         if ball_pos[1] <= 0:
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
@@ -301,6 +306,14 @@ def main():
         if score == 40:
             victory_screen()
             main()
+        
+        # if (score % 10 == 0):
+        #     if (not(lock)):
+        #         pygame.draw.rect(screen, RED, (int(random.uniform(100, WIDTH - 100)), int(random.uniform(100, HEIGHT - 200)), 100, 100))
+        #         pygame.display.flip()
+        #         lock = True
+        # else:
+        #     lock = False
 
         screen.fill(screen_color)
         pygame.draw.rect(screen, WHITE, (int(aston_pos[0]), int(aston_pos[1]), aston_width, aston_height))
