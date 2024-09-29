@@ -247,11 +247,11 @@ def main():
             ball_speed[1] = random.uniform(-8, 8)
         
         if (aston_dir == 0):
-            aston_pos[0] += 2
+            aston_pos[0] += 10
             if (aston_pos[0] == WIDTH - aston_width):
                 aston_dir = 1
         elif (aston_dir == 1):
-            aston_pos[0] -= 2
+            aston_pos[0] -= 10
             if (aston_pos[0] == 0):
                 aston_dir = 0
         
@@ -268,9 +268,7 @@ def main():
                     main()
 
         keys = pygame.key.get_pressed()
-        platform_pos1[0] += (
-            (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed) - (
-                (keys[pygame.K_a] - keys[pygame.K_d]) * platform_speed)
+        platform_pos1[0] += ((keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed) - ((keys[pygame.K_a] - keys[pygame.K_d]) * platform_speed)
         if keys[pygame.K_RIGHT] and keys[pygame.K_d]:
             platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
         if keys[pygame.K_LEFT] and keys[pygame.K_a]:
@@ -279,9 +277,12 @@ def main():
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
 
-        if (aston_pos[0] <= ball_pos[0] <= aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS and ball_pos[1] - BALL_RADIUS <= aston_pos[1] + aston_height):
+        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] <= ball_pos[1] + BALL_RADIUS and ball_pos[1] - BALL_RADIUS <= aston_pos[1] + aston_height):
             ball_speed[1] = -ball_speed[1]
-
+        
+        if ((aston_pos[0] == ball_pos[0] or aston_pos[0] + aston_width == ball_pos[0] - BALL_RADIUS) and aston_pos[1] <= ball_pos[1] + BALL_RADIUS <= aston_pos[1] + aston_height):
+            ball_speed[0] = -ball_speed[0]
+        
         if ball_pos[0] <= 0 or ball_pos[0] >= WIDTH:
             BALL_RADIUS = random.uniform(25, 45)
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
