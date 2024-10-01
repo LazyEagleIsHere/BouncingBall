@@ -225,86 +225,86 @@ def main():
         ball_pos[1] += ball_speed[1]
                 
         if (portal1_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal1_pos[0] + portal1_width + BALL_RADIUS and portal1_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal1_pos[1] + portal1_height + BALL_RADIUS):
-            if (teleport):
-                teleport = False
-                speed = [ball_speed[0], ball_speed[1]]
-                ball_speed = speed
-                continue
-            else:
-                teleport = True
-                speed = [ball_speed[0], ball_speed[1]]
-                if (ball_speed[0] > 0):
-                    if (ball_speed[1] > 0):
-                        if (portal2_dir == 0):
-                            ball_pos[0] = portal2_pos[0] + portal2_width
-                            ball_pos[1] = portal2_pos[1] + portal2_height
-                        else:
-                            ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
-                            ball_pos[1] = portal2_pos[1] + portal2_height
+            # if (teleport):
+            #     teleport = False
+            #     speed = [ball_speed[0], ball_speed[1]]
+            #     ball_speed = speed
+            #     continue
+            # else:
+            # teleport = True
+            speed = [ball_speed[0], ball_speed[1]]
+            if (ball_speed[0] > 0):
+                if (ball_speed[1] > 0):
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] + portal2_width
+                        ball_pos[1] = portal2_pos[1] + portal2_height
                     else:
-                        if (portal2_dir == 0):
-                            ball_pos[0] = portal2_pos[0] + portal2_width
-                            ball_pos[1] = portal2_pos[1]
-                        else:
-                            ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
-                            ball_pos[1] = portal2_pos[1]
+                        ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal2_pos[1] + portal2_height
                 else:
-                    if (ball_speed[1] > 0):
-                        if (portal2_dir == 0):
-                            ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
-                            ball_pos[1] = portal2_pos[1] + portal2_height
-                        else:
-                            ball_pos[0] = portal2_pos[0]
-                            ball_pos[1] = portal2_pos[1] + portal2_height
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] + portal2_width
+                        ball_pos[1] = portal2_pos[1]
                     else:
-                        if (portal2_dir == 0):
-                            ball_pos[0] = portal2_pos[0] 
-                            ball_pos[1] = portal2_pos[1]
-                        else:
-                            ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
-                            ball_pos[1] = portal2_pos[1]
-                ball_speed = speed
+                        ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal2_pos[1]
+            else:
+                if (ball_speed[1] > 0):
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal2_pos[1] + portal2_height
+                    else:
+                        ball_pos[0] = portal2_pos[0]
+                        ball_pos[1] = portal2_pos[1] + portal2_height
+                else:
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] 
+                        ball_pos[1] = portal2_pos[1]
+                    else:
+                        ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal2_pos[1]
+            ball_speed = speed
         
         if (portal2_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal2_pos[0] + portal2_width + BALL_RADIUS and portal2_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal2_pos[1] + portal2_height + BALL_RADIUS):
-            if (teleport):
-                teleport = False
-                speed = [ball_speed[0], ball_speed[1]]
-                ball_speed = speed
-                continue
-            else:
-                teleport = True
-                speed = [ball_speed[0], ball_speed[1]]
-                if (ball_speed[0] > 0):
-                    if (ball_speed[1] > 0):
-                        if (portal1_dir == 0):
-                            ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
-                            ball_pos[1] = portal1_pos[1] + portal1_height
-                        else:
-                            ball_pos[0] = portal1_pos[0] + portal1_width
-                            ball_pos[1] = portal1_pos[1] + portal1_height
+            # if (teleport):
+            #     teleport = False
+            #     speed = [ball_speed[0], ball_speed[1]]
+            #     ball_speed = speed
+            #     continue
+            # else:
+                # teleport = True
+            speed = [ball_speed[0], ball_speed[1]]
+            if (ball_speed[0] > 0):
+                if (ball_speed[1] > 0):
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal1_pos[1] + portal1_height
                     else:
-                        if (portal1_dir == 0):
-                            ball_pos[0] = portal1_pos[0] + portal1_width
-                            ball_pos[1] = portal1_pos[1]
-                        else:
-                            ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
-                            ball_pos[1] = portal1_pos[1]
+                        ball_pos[0] = portal1_pos[0] + portal1_width
+                        ball_pos[1] = portal1_pos[1] + portal1_height
                 else:
-                    if (ball_speed[1] > 0):
-                        if (portal1_dir == 0):
-                            ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
-                            ball_pos[1] = portal1_pos[0] + portal1_height 
-                        else:
-                            ball_pos[0] = portal1_pos[0]
-                            ball_pos[1] = portal1_pos[0] + portal1_height
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] + portal1_width
+                        ball_pos[1] = portal1_pos[1]
                     else:
-                        if (portal1_dir == 0):
-                            ball_pos[0] = portal1_pos[0]
-                            ball_pos[1] = portal1_pos[1]
-                        else:
-                            ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
-                            ball_pos[1] = portal1_pos[1]
-                ball_speed = speed
+                        ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal1_pos[1]
+            else:
+                if (ball_speed[1] > 0):
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal1_pos[0] + portal1_height 
+                    else:
+                        ball_pos[0] = portal1_pos[0]
+                        ball_pos[1] = portal1_pos[0] + portal1_height
+                else:
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0]
+                        ball_pos[1] = portal1_pos[1]
+                    else:
+                        ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal1_pos[1]
+            ball_speed = speed
         
         if (portal1_dir == 0):
             portal1_pos[1] += 2
