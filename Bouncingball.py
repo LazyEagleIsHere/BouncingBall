@@ -9,8 +9,8 @@ def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
-    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
-    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
+    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
+    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
     FPS = 100
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
