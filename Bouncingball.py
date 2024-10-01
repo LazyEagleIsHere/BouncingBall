@@ -39,7 +39,7 @@ def main():
     portal1_dir = 0
     portal2_dir = 0
     portal2_width, portal2_height = 100, 100
-    portal2_pos = [WIDTH - 500, 100]
+    portal2_pos = [WIDTH - 200, HEIGHT - 250]
     teleport = False
     # if (developer):
     #     aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
