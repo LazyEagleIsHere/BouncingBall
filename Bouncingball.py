@@ -4,7 +4,8 @@ import random
 
 pygame.init()
 
-def main():
+def main():    
+    developer = True
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
@@ -33,15 +34,19 @@ def main():
     platform_color = ORANGE
     ball_color = WHITE
     background_colour = 125
-    # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
-    # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
-    aston_width, aston_height = 250, 30
-    # aston_width, aston_height = WIDTH, 30
-    aston_pos = [0, HEIGHT // 2 - 100]
-    aston_dir = 0
-    good = 0
-    bad = 1
-    lock = False
+    if (developer):
+        aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
+        aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
+        aston_width, aston_height = WIDTH, 30
+        aston_pos = [0, HEIGHT // 2 - 100]
+        aston_dir = 2
+    else:
+        aston_width, aston_height = WIDTH, 30
+        aston_pos = [0, HEIGHT // 2 + 100]
+        aston_dir = 0
+        good = 0
+        bad = 1
+        lock = False
 
     def start_screen():
         i = 0
@@ -212,26 +217,7 @@ def main():
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
         
-        # if ((aston_pos[0] <= ball_pos[0] + BALL_RADIUS <= aston_pos[0] + aston_width + BALL_RADIUS + 20) and aston_pos[1] - BALL_RADIUS <= ball_pos[1] <= aston_pos[1] + aston_height + BALL_RADIUS):
-        #     ball_speed[0] = -ball_speed[0]
-        if ((ball_pos[0] == aston_pos[0] and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height)) or 
-            (ball_pos[0] == aston_pos[0] + aston_width and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height))):
-            ball_pos[1] -= 5
-            ball_speed[1] = -ball_speed[1]
-
-            if (aston_dir == 0):
-                if (ball_speed[0] > 0):
-                    aston_pos[0] += ball_speed[0] / 1.1
-                else:
-                    aston_dir = 1
-            else:
-                if (ball_speed[0] < 0):
-                    aston_pos[0] -= ball_speed[0] / 1.1
-                else:
-                    aston_dir = 0
-
-        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] - BALL_RADIUS <= ball_pos[1] + 10 <= aston_pos[1] + aston_height + BALL_RADIUS):
-            ball_speed[1] = -ball_speed[1]
+        
         
         if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= WIDTH:
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
@@ -251,6 +237,8 @@ def main():
             aston_pos[0] -= 5
             if (aston_pos[0] == 0):
                 aston_dir = 0
+        else:
+            aston_pos[0] += 0
 
         if ball_pos[1] <= 0:
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
