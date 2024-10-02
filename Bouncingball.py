@@ -4,7 +4,8 @@ import random
 
 pygame.init()
 
-def main():
+def main():    
+    developer = True
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
@@ -33,15 +34,26 @@ def main():
     platform_color = ORANGE
     ball_color = WHITE
     background_colour = 125
-    # aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
-    # aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
-    aston_width, aston_height = 250, 30
-    # aston_width, aston_height = WIDTH, 30
-    aston_pos = [0, HEIGHT // 2 - 100]
-    aston_dir = 0
-    good = 0
-    bad = 1
-    lock = False
+    portal1_width, portal1_height = 100, 100
+    portal1_pos = [200, 200]
+    portal1_dir = 0
+    portal2_dir = 0
+    portal2_width, portal2_height = 100, 100
+    portal2_pos = [WIDTH - 200, HEIGHT - 250]
+    teleport = False
+    # if (developer):
+    #     aston_width, aston_height = random.uniform(100, 500), random.uniform(10, 30)
+    #     aston_pos = [random.uniform(60, WIDTH + 100), random.uniform(60, HEIGHT - 100)]
+    #     aston_width, aston_height = WIDTH, 30
+    #     aston_pos = [0, HEIGHT // 2 - 100]
+    #     aston_dir = 2
+    # else:
+    #     aston_width, aston_height = WIDTH, 30
+    #     aston_pos = [0, HEIGHT // 2 + 100]
+    #     aston_dir = 0
+    #     good = 0
+    #     bad = 1
+    #     lock = False
 
     def start_screen():
         i = 0
@@ -211,27 +223,106 @@ def main():
         platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
-        
-        # if ((aston_pos[0] <= ball_pos[0] + BALL_RADIUS <= aston_pos[0] + aston_width + BALL_RADIUS + 20) and aston_pos[1] - BALL_RADIUS <= ball_pos[1] <= aston_pos[1] + aston_height + BALL_RADIUS):
-        #     ball_speed[0] = -ball_speed[0]
-        if ((ball_pos[0] == aston_pos[0] and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height)) or 
-            (ball_pos[0] == aston_pos[0] + aston_width and (ball_pos[1] + BALL_RADIUS == aston_pos[1] or ball_pos[1] - BALL_RADIUS == aston_pos[1] + aston_height))):
-            ball_pos[1] -= 5
-            ball_speed[1] = -ball_speed[1]
-
-            if (aston_dir == 0):
-                if (ball_speed[0] > 0):
-                    aston_pos[0] += ball_speed[0] / 1.1
+                
+        if (portal1_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal1_pos[0] + portal1_width + BALL_RADIUS and portal1_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal1_pos[1] + portal1_height + BALL_RADIUS):
+            # if (teleport):
+            #     teleport = False
+            #     speed = [ball_speed[0], ball_speed[1]]
+            #     ball_speed = speed
+            #     continue
+            # else:
+            # teleport = True
+            speed = [ball_speed[0], ball_speed[1]]
+            if (ball_speed[0] > 0):
+                if (ball_speed[1] > 0):
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] + portal2_width
+                        ball_pos[1] = portal2_pos[1] + portal2_height
+                    else:
+                        ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal2_pos[1] + portal2_height
                 else:
-                    aston_dir = 1
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] + portal2_width
+                        ball_pos[1] = portal2_pos[1]
+                    else:
+                        ball_pos[0] = portal2_pos[0] + portal2_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal2_pos[1]
             else:
-                if (ball_speed[0] < 0):
-                    aston_pos[0] -= ball_speed[0] / 1.1
+                if (ball_speed[1] > 0):
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal2_pos[1] + portal2_height
+                    else:
+                        ball_pos[0] = portal2_pos[0]
+                        ball_pos[1] = portal2_pos[1] + portal2_height
                 else:
-                    aston_dir = 0
-
-        if (aston_pos[0] < ball_pos[0] < aston_pos[0] + aston_width and aston_pos[1] - BALL_RADIUS <= ball_pos[1] + 10 <= aston_pos[1] + aston_height + BALL_RADIUS):
-            ball_speed[1] = -ball_speed[1]
+                    if (portal2_dir == 0):
+                        ball_pos[0] = portal2_pos[0] 
+                        ball_pos[1] = portal2_pos[1]
+                    else:
+                        ball_pos[0] = portal2_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal2_pos[1]
+            ball_speed = speed
+        
+        if (portal2_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal2_pos[0] + portal2_width + BALL_RADIUS and portal2_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal2_pos[1] + portal2_height + BALL_RADIUS):
+            # if (teleport):
+            #     teleport = False
+            #     speed = [ball_speed[0], ball_speed[1]]
+            #     ball_speed = speed
+            #     continue
+            # else:
+                # teleport = True
+            speed = [ball_speed[0], ball_speed[1]]
+            if (ball_speed[0] > 0):
+                if (ball_speed[1] > 0):
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal1_pos[1] + portal1_height
+                    else:
+                        ball_pos[0] = portal1_pos[0] + portal1_width
+                        ball_pos[1] = portal1_pos[1] + portal1_height
+                else:
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] + portal1_width
+                        ball_pos[1] = portal1_pos[1]
+                    else:
+                        ball_pos[0] = portal1_pos[0] + portal1_width + BALL_RADIUS + 3
+                        ball_pos[1] = portal1_pos[1]
+            else:
+                if (ball_speed[1] > 0):
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal1_pos[0] + portal1_height 
+                    else:
+                        ball_pos[0] = portal1_pos[0]
+                        ball_pos[1] = portal1_pos[0] + portal1_height
+                else:
+                    if (portal1_dir == 0):
+                        ball_pos[0] = portal1_pos[0]
+                        ball_pos[1] = portal1_pos[1]
+                    else:
+                        ball_pos[0] = portal1_pos[0] - BALL_RADIUS - 3
+                        ball_pos[1] = portal1_pos[1]
+            ball_speed = speed
+        
+        if (portal1_dir == 0):
+            portal1_pos[1] += 2
+            if (portal1_pos[1] >= HEIGHT - 250):
+                portal1_dir = 1
+        else:
+            portal1_pos[1] -= 2
+            if (portal1_pos[1] <= 250):
+                portal1_dir = 0
+        
+        if (portal2_dir == 1):
+            portal2_pos[1] += 2
+            if (portal2_pos[1] >= HEIGHT - 250):
+                portal2_dir = 0
+        else:
+            portal2_pos[1] -= 2
+            if (portal2_pos[1] <= 250):
+                portal2_dir = 1
         
         if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= WIDTH:
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
@@ -243,14 +334,16 @@ def main():
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
         
-        if (aston_dir == 0):
-            aston_pos[0] += 5
-            if (aston_pos[0] == WIDTH - aston_width):
-                aston_dir = 1
-        elif (aston_dir == 1):
-            aston_pos[0] -= 5
-            if (aston_pos[0] == 0):
-                aston_dir = 0
+        # if (aston_dir == 0):
+        #     aston_pos[0] += 5
+        #     if (aston_pos[0] == WIDTH - aston_width):
+        #         aston_dir = 1
+        # elif (aston_dir == 1):
+        #     aston_pos[0] -= 5
+        #     if (aston_pos[0] == 0):
+        #         aston_dir = 0
+        # else:
+        #     aston_pos[0] += 0
 
         if ball_pos[1] <= 0:
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
@@ -308,11 +401,13 @@ def main():
                 current_level = 1
             else:
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
-                if current_level != 1:
-                    ball_speed = [(current_level - 1) * 10, -abs((current_level - 1) * 10)]
-                else:
-                    ball_speed = [
-                        random.uniform(random.uniform(4, 6), random.uniform(-4, -6)) * 1.5, random.uniform(-4, -6) * 1.5]
+                if (ball_speed[1] > 0):
+                    ball_speed[1] = -ball_speed[1]
+                # if current_level != 1:
+                #     ball_speed = [(current_level - 1) * 10, -abs((current_level - 1) * 10)]
+                # else:
+                #     ball_speed = [
+                #         random.uniform(random.uniform(4, 6), random.uniform(-4, -6)) * 1.5, random.uniform(-4, -6) * 1.5]
 
         if score == 40:
             victory_screen()
@@ -328,9 +423,15 @@ def main():
 
         screen.fill(screen_color)
         
-        pygame.draw.rect(screen, WHITE, (int(aston_pos[0]), int(aston_pos[1]), aston_width, aston_height))
+        # pygame.draw.rect(screen, WHITE, (int(aston_pos[0]), int(aston_pos[1]), aston_width, aston_height))
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
         pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
+
+        teleport1_msg = font.render(f"", True, WHITE)
+        teleport1_rect = teleport1_msg.get_rect(topleft = (portal1_pos[0], portal1_pos[1]))
+        pygame.draw.rect(screen, RED, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
+        screen.blit(teleport1_msg, teleport1_rect)
+        pygame.draw.rect(screen, ORANGE, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
         
         info_line_y = 10
         info_spacing = 75
