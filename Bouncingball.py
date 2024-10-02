@@ -9,8 +9,8 @@ def main():
     display_info = pygame.display.Info()
     WIDTH, HEIGHT = display_info.current_w, display_info.current_h
     BALL_RADIUS = 30
-    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
-    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
+    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
+    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
     FPS = 100
     BLACK = (0, 0, 0)
     WHITE = (255, 255, 255)
@@ -333,17 +333,6 @@ def main():
                 ball_speed[0] = -ball_speed[0]
             ball_color = change_ball_color()
             # screen_color = change_screen_color()
-        
-        # if (aston_dir == 0):
-        #     aston_pos[0] += 5
-        #     if (aston_pos[0] == WIDTH - aston_width):
-        #         aston_dir = 1
-        # elif (aston_dir == 1):
-        #     aston_pos[0] -= 5
-        #     if (aston_pos[0] == 0):
-        #         aston_dir = 0
-        # else:
-        #     aston_pos[0] += 0
 
         if ball_pos[1] <= 0:
             if ((score % 2 == 0 and score != 0) and ball_speed[1] < current_level * 10 and ball_speed[1] > -(current_level * 10)):
@@ -403,34 +392,17 @@ def main():
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
                 if (ball_speed[1] > 0):
                     ball_speed[1] = -ball_speed[1]
-                # if current_level != 1:
-                #     ball_speed = [(current_level - 1) * 10, -abs((current_level - 1) * 10)]
-                # else:
-                #     ball_speed = [
-                #         random.uniform(random.uniform(4, 6), random.uniform(-4, -6)) * 1.5, random.uniform(-4, -6) * 1.5]
 
         if score == 40:
             victory_screen()
             main()
-        
-        # if (score % 10 == 0):
-        #     if (not(lock)):
-        #         pygame.draw.rect(screen, RED, (int(random.uniform(100, WIDTH - 100)), int(random.uniform(100, HEIGHT - 200)), 100, 100))
-        #         pygame.display.flip()
-        #         lock = True
-        # else:
-        #     lock = False
 
         screen.fill(screen_color)
         
         # pygame.draw.rect(screen, WHITE, (int(aston_pos[0]), int(aston_pos[1]), aston_width, aston_height))
         pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
         pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
-
-        teleport1_msg = font.render(f"", True, WHITE)
-        teleport1_rect = teleport1_msg.get_rect(topleft = (portal1_pos[0], portal1_pos[1]))
         pygame.draw.rect(screen, RED, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
-        screen.blit(teleport1_msg, teleport1_rect)
         pygame.draw.rect(screen, ORANGE, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
         
         info_line_y = 10
