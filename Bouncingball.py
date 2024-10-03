@@ -6,7 +6,7 @@ pygame.init()
 
 def main():    
     display_info = pygame.display.Info()
-    WIDTH, HEIGHT = display_info.current_w, display_info.current_h
+    width, height = display_info.current_w, display_info.current_h
     FPS = 100
     clock = pygame.time.Clock()
     
@@ -17,20 +17,20 @@ def main():
     ORANGE = (255, 165, 0)
     LIGHT_BLUE = (173, 116, 233)
     
-    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    screen = pygame.display.set_mode((width, height))
     screen_color = BLACK
     pygame.display.set_caption('Bouncing Ball Game')
     font = pygame.font.Font(None, 36)
     
     # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
     PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
-    platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
+    platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
     platform_speed = 12
     platform_color = ORANGE
     
     BALL_RADIUS = 30
     ball_color = WHITE
-    ball_pos = [WIDTH // 2, HEIGHT // 2]
+    ball_pos = [width // 2, height // 2]
     ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     
     score = 0
@@ -45,7 +45,7 @@ def main():
     portal1_dir = [0, 0]
     
     portal2_width, portal2_height = 100, 100
-    portal2_pos = [WIDTH - 200, HEIGHT - 250]
+    portal2_pos = [width - 200, height - 250]
     portal2_dir = [0, 0]
 
     def start_screen():
@@ -54,10 +54,10 @@ def main():
         while start:
             screen.fill(rainbow_color(i))
             i = (i + 1) % ((background_colour + 1) * 6)
-            show_text_on_screen("Bouncing Ball Game", 100, HEIGHT // 4)
-            show_text_on_screen("Press spacebar to start...", 50, HEIGHT // 2)
-            show_text_on_screen("Move the platform with arrow keys...", 45, HEIGHT // 1.5)
-            show_text_on_screen("Your mission is to get 40 points", 100, HEIGHT // 1.2)
+            show_text_on_screen("Bouncing Ball Game", 100, height // 4)
+            show_text_on_screen("Press spacebar to start...", 50, height // 2)
+            show_text_on_screen("Move the platform with arrow keys...", 45, height // 1.5)
+            show_text_on_screen("Your mission is to get 40 points", 100, height // 1.2)
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -88,9 +88,9 @@ def main():
 
     def end_screen():
         screen.fill(BLACK)
-        show_text_on_screen("Good Try! :)", 100, HEIGHT // 4)
-        show_text_on_screen(f"Your final score: {score}", 50, HEIGHT // 2)
-        show_text_on_screen("Press spacebar to restart...", 45, HEIGHT // 1.5)
+        show_text_on_screen("Good Try! :)", 100, height // 4)
+        show_text_on_screen(f"Your final score: {score}", 50, height // 2)
+        show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
         pygame.display.flip()
         wait_for_key()
 
@@ -100,9 +100,9 @@ def main():
         while win:
             screen.fill(rainbow_color(i))
             i = (i + 1) % ((background_colour + 1) * 6)
-            show_text_on_screen("Congratulations!", 100, HEIGHT // 4)
-            show_text_on_screen("You Win! :D", 50, HEIGHT // 2)
-            show_text_on_screen("Press spacebar to restart...", 45, HEIGHT // 1.5)
+            show_text_on_screen("Congratulations!", 100, height // 4)
+            show_text_on_screen("You Win! :D", 50, height // 2)
+            show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -132,7 +132,7 @@ def main():
     def show_text_on_screen(text, font_size, y_position):
         font = pygame.font.Font(None, font_size)
         text_render = font.render(text, True, GRAY)
-        text_rect = text_render.get_rect(center=(WIDTH // 2, y_position))
+        text_rect = text_render.get_rect(center=(width // 2, y_position))
         screen.blit(text_render, text_rect)
 
     def change_platform_color():
@@ -158,7 +158,7 @@ def main():
         if ball_speed[1] == 0:
             ball_speed[1] = random.uniform(-8, 8)
         
-        show_text_on_screen(str(ball_speed), 30, HEIGHT // 5)
+        show_text_on_screen(str(ball_speed), 30, height // 5)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -176,7 +176,7 @@ def main():
             platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
         if keys[pygame.K_LEFT] and keys[pygame.K_a]:
             platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
-        platform_pos1[0] = max(0, min(platform_pos1[0], WIDTH - PLATFORM_WIDTH1))
+        platform_pos1[0] = max(0, min(platform_pos1[0], width - PLATFORM_WIDTH1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
         
@@ -187,13 +187,13 @@ def main():
         if (portal1_pos[0] - BALL_RADIUS - 2 <= 0):
             portal1_dir[0] = 0
             
-        if (portal1_pos[0] + portal1_width + BALL_RADIUS + 2 >= WIDTH):
+        if (portal1_pos[0] + portal1_width + BALL_RADIUS + 2 >= width):
             portal1_dir[0] = 1
             
         if (portal1_pos[1] - BALL_RADIUS - 2 <= 0):
             portal1_dir[1] = 1
         
-        if (portal1_pos[1] + portal1_height + BALL_RADIUS >= HEIGHT):
+        if (portal1_pos[1] + portal1_height + BALL_RADIUS >= height):
             portal1_dir[1] = 0
         
         if (portal1_dir[0] == 0):
@@ -213,13 +213,13 @@ def main():
         if (portal2_pos[0] - BALL_RADIUS - 2 <= 0):
             portal2_dir[0] = 1
             
-        if (portal2_pos[0] + portal2_width + BALL_RADIUS + 2 >= WIDTH):
+        if (portal2_pos[0] + portal2_width + BALL_RADIUS + 2 >= width):
             portal2_dir[0] = 0
             
         if (portal2_pos[1] - BALL_RADIUS - 2 <= 0):
             portal2_dir[1] = 0
         
-        if (portal2_pos[1] + portal2_height + BALL_RADIUS >= HEIGHT):
+        if (portal2_pos[1] + portal2_height + BALL_RADIUS >= height):
             portal2_dir[1] = 1
         
         if (portal2_dir[0] == 1):
@@ -232,7 +232,7 @@ def main():
         else:
             portal2_pos[1] -= portal_speed[1]
         
-        if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= WIDTH:
+        if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= width:
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.05
                 if (platform_speed < 22):
@@ -270,18 +270,18 @@ def main():
             if PLATFORM_HEIGHT1 <= 150:
                 PLATFORM_HEIGHT1 *= 1.15
             lives += 1
-            platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
-            if PLATFORM_WIDTH1 < WIDTH // 2 - 1000:
+            platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
+            if PLATFORM_WIDTH1 < width // 2 - 1000:
                 PLATFORM_WIDTH1 *= 1.25
                 if (PLATFORM_HEIGHT1 <= 150):
                     PLATFORM_HEIGHT1 *= 1.05
-            ball_pos = [WIDTH // 2, HEIGHT // 2]
+            ball_pos = [width // 2, height // 2]
             platform_color = change_platform_color()
             ball_color = change_ball_color()
 
-        if ball_pos[1] >= HEIGHT:
+        if ball_pos[1] >= height:
             lives -= 1
-            platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
+            platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
             if lives == 0:
                 end_screen()
                 main()
@@ -289,7 +289,7 @@ def main():
                 lives = 3
                 current_level = 1
             else:
-                ball_pos = [WIDTH // 2, HEIGHT // 2]
+                ball_pos = [width // 2, height // 2]
                 if (ball_speed[1] > 0):
                     ball_speed[1] = -ball_speed[1]
 
