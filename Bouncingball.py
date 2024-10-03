@@ -271,10 +271,7 @@ def main():
             if PLATFORM_HEIGHT1 <= 150:
                 PLATFORM_HEIGHT1 *= 1.15
             lives += 1
-            platform_pos1 = [
-                WIDTH // 2 - PLATFORM_WIDTH1 // 2,
-                HEIGHT - PLATFORM_HEIGHT1 - 10
-            ]
+            platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
             if PLATFORM_WIDTH1 < WIDTH // 2 - 1000:
                 PLATFORM_WIDTH1 *= 1.25
                 if (PLATFORM_HEIGHT1 <= 150):
@@ -296,7 +293,6 @@ def main():
                 ball_pos = [WIDTH // 2, HEIGHT // 2]
                 if (ball_speed[1] > 0):
                     ball_speed[1] = -ball_speed[1]
-                    ball_speed[0] = random.uniform(ball_speed[0], -ball_speed[0])
 
         if score == 40:
             victory_screen()
