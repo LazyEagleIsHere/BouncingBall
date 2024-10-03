@@ -10,26 +10,26 @@ def main():
     FPS = 100
     clock = pygame.time.Clock()
     
-    BLACK = (0, 0, 0)
-    WHITE = (255, 255, 255)
-    RED = (255, 0, 0)
-    GRAY = (200, 200, 200)
-    ORANGE = (255, 165, 0)
-    LIGHT_BLUE = (173, 116, 233)
+    black = (0, 0, 0)
+    white = (255, 255, 255)
+    red = (255, 0, 0)
+    gray = (200, 200, 200)
+    orange = (255, 165, 0)
+    light_blue = (173, 116, 233)
     
     screen = pygame.display.set_mode((width, height))
-    screen_color = BLACK
+    screen_color = black
     pygame.display.set_caption('Bouncing Ball Game')
     font = pygame.font.Font(None, 36)
     
-    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
-    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
-    platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
+    # platform_width1, platform_height1 = width, 20
+    platform_width1, platform_height1 = 150, 20
+    platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
     platform_speed = 12
-    platform_color = ORANGE
+    platform_color = orange
     
-    BALL_RADIUS = 30
-    ball_color = WHITE
+    ball_radius = 30
+    ball_color = white
     ball_pos = [width // 2, height // 2]
     ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
     
@@ -87,7 +87,7 @@ def main():
             return (background_colour, 0, background_colour - pos)
 
     def end_screen():
-        screen.fill(BLACK)
+        screen.fill(black)
         show_text_on_screen("Good Try! :)", 100, height // 4)
         show_text_on_screen(f"Your final score: {score}", 50, height // 2)
         show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
@@ -131,7 +131,7 @@ def main():
 
     def show_text_on_screen(text, font_size, y_position):
         font = pygame.font.Font(None, font_size)
-        text_render = font.render(text, True, GRAY)
+        text_render = font.render(text, True, gray)
         text_rect = text_render.get_rect(center=(width // 2, y_position))
         screen.blit(text_render, text_rect)
 
@@ -176,24 +176,24 @@ def main():
             platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
         if keys[pygame.K_LEFT] and keys[pygame.K_a]:
             platform_pos1[0] -= (keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed
-        platform_pos1[0] = max(0, min(platform_pos1[0], width - PLATFORM_WIDTH1))
+        platform_pos1[0] = max(0, min(platform_pos1[0], width - platform_width1))
         ball_pos[0] += ball_speed[0]
         ball_pos[1] += ball_speed[1]
         
-        if (portal1_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal1_pos[0] + portal1_width + BALL_RADIUS and portal1_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal1_pos[1] + portal1_height + BALL_RADIUS):
-            ball_pos[0] = random.uniform(portal2_pos[0] - BALL_RADIUS, portal2_pos[0] + portal2_width + BALL_RADIUS)
-            ball_pos[1] = random.uniform(portal2_pos[1] - BALL_RADIUS, portal2_pos[1] + portal2_height + BALL_RADIUS)
+        if (portal1_pos[0] - ball_radius <= ball_pos[0] <= portal1_pos[0] + portal1_width + ball_radius and portal1_pos[1] - ball_radius <= ball_pos[1] <= portal1_pos[1] + portal1_height + ball_radius):
+            ball_pos[0] = random.uniform(portal2_pos[0] - ball_radius, portal2_pos[0] + portal2_width + ball_radius)
+            ball_pos[1] = random.uniform(portal2_pos[1] - ball_radius, portal2_pos[1] + portal2_height + ball_radius)
 
-        if (portal1_pos[0] - BALL_RADIUS - 2 <= 0):
+        if (portal1_pos[0] - ball_radius - 2 <= 0):
             portal1_dir[0] = 0
             
-        if (portal1_pos[0] + portal1_width + BALL_RADIUS + 2 >= width):
+        if (portal1_pos[0] + portal1_width + ball_radius + 2 >= width):
             portal1_dir[0] = 1
             
-        if (portal1_pos[1] - BALL_RADIUS - 2 <= 0):
+        if (portal1_pos[1] - ball_radius - 2 <= 0):
             portal1_dir[1] = 1
         
-        if (portal1_pos[1] + portal1_height + BALL_RADIUS >= height):
+        if (portal1_pos[1] + portal1_height + ball_radius >= height):
             portal1_dir[1] = 0
         
         if (portal1_dir[0] == 0):
@@ -206,20 +206,20 @@ def main():
         else:
             portal1_pos[1] -= portal_speed[1]
         
-        if (portal2_pos[0] - BALL_RADIUS <= ball_pos[0] <= portal2_pos[0] + portal2_width + BALL_RADIUS and portal2_pos[1] - BALL_RADIUS <= ball_pos[1] <= portal2_pos[1] + portal2_height + BALL_RADIUS):
-            ball_pos[0] = random.uniform(portal1_pos[0] - BALL_RADIUS, portal1_pos[0] + portal1_width + BALL_RADIUS)
-            ball_pos[1] = random.uniform(portal1_pos[1] - BALL_RADIUS, portal1_pos[1] + portal1_height + BALL_RADIUS)
+        if (portal2_pos[0] - ball_radius <= ball_pos[0] <= portal2_pos[0] + portal2_width + ball_radius and portal2_pos[1] - ball_radius <= ball_pos[1] <= portal2_pos[1] + portal2_height + ball_radius):
+            ball_pos[0] = random.uniform(portal1_pos[0] - ball_radius, portal1_pos[0] + portal1_width + ball_radius)
+            ball_pos[1] = random.uniform(portal1_pos[1] - ball_radius, portal1_pos[1] + portal1_height + ball_radius)
 
-        if (portal2_pos[0] - BALL_RADIUS - 2 <= 0):
+        if (portal2_pos[0] - ball_radius - 2 <= 0):
             portal2_dir[0] = 1
             
-        if (portal2_pos[0] + portal2_width + BALL_RADIUS + 2 >= width):
+        if (portal2_pos[0] + portal2_width + ball_radius + 2 >= width):
             portal2_dir[0] = 0
             
-        if (portal2_pos[1] - BALL_RADIUS - 2 <= 0):
+        if (portal2_pos[1] - ball_radius - 2 <= 0):
             portal2_dir[1] = 0
         
-        if (portal2_pos[1] + portal2_height + BALL_RADIUS >= height):
+        if (portal2_pos[1] + portal2_height + ball_radius >= height):
             portal2_dir[1] = 1
         
         if (portal2_dir[0] == 1):
@@ -232,7 +232,7 @@ def main():
         else:
             portal2_pos[1] -= portal_speed[1]
         
-        if ball_pos[0] - BALL_RADIUS - 5 <= 0 or ball_pos[0] + BALL_RADIUS + 5 >= width:
+        if ball_pos[0] - ball_radius - 5 <= 0 or ball_pos[0] + ball_radius + 5 >= width:
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.05
                 if (platform_speed < 22):
@@ -250,7 +250,7 @@ def main():
                 ball_speed[1] = -ball_speed[1]
             ball_color = change_ball_color()
 
-        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + PLATFORM_WIDTH1 and platform_pos1[1] + 10 <= ball_pos[1] + BALL_RADIUS <= platform_pos1[1] + PLATFORM_HEIGHT1):
+        if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + platform_width1 and platform_pos1[1] + 10 <= ball_pos[1] + ball_radius <= platform_pos1[1] + platform_height1):
             if (keys[pygame.K_LEFT] and keys[pygame.K_a]):
                 if (ball_speed[0] > 0):
                     ball_speed -= (platform_speed / 3)
@@ -267,21 +267,21 @@ def main():
 
         if score >= current_level * 10:
             current_level += 1
-            if PLATFORM_HEIGHT1 <= 150:
-                PLATFORM_HEIGHT1 *= 1.15
+            if platform_height1 <= 150:
+                platform_height1 *= 1.15
             lives += 1
-            platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
-            if PLATFORM_WIDTH1 < width // 2 - 1000:
-                PLATFORM_WIDTH1 *= 1.25
-                if (PLATFORM_HEIGHT1 <= 150):
-                    PLATFORM_HEIGHT1 *= 1.05
+            platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
+            if platform_width1 < width // 2 - 1000:
+                platform_width1 *= 1.25
+                if (platform_height1 <= 150):
+                    platform_height1 *= 1.05
             ball_pos = [width // 2, height // 2]
             platform_color = change_platform_color()
             ball_color = change_ball_color()
 
         if ball_pos[1] >= height:
             lives -= 1
-            platform_pos1 = [width // 2 - PLATFORM_WIDTH1 // 2, height - PLATFORM_HEIGHT1 - 10]
+            platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
             if lives == 0:
                 end_screen()
                 main()
@@ -299,36 +299,36 @@ def main():
 
         screen.fill(screen_color)
         
-        pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), BALL_RADIUS)
-        pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, PLATFORM_WIDTH1, PLATFORM_HEIGHT1))
-        pygame.draw.rect(screen, RED, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
-        pygame.draw.rect(screen, ORANGE, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
+        pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), ball_radius)
+        pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, platform_width1, platform_height1))
+        pygame.draw.rect(screen, red, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
+        pygame.draw.rect(screen, orange, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
         
         info_line_y = 10
         info_spacing = 75
-        score_text = font.render(f"Score: {score}", True, WHITE)
-        score_rect = score_text.get_rect(topleft=(10, info_line_y))
-        pygame.draw.rect(screen, ORANGE, score_rect.inflate(10, 5))
+        score_text = font.render(f"Score: {score}", True, white)
+        score_rect = score_text.get_rect(topleft = (10, info_line_y))
+        pygame.draw.rect(screen, orange, score_rect.inflate(10, 5))
         screen.blit(score_text, score_rect)
         
-        level_text = font.render(f"Level: {current_level}", True, WHITE)
-        level_rect = level_text.get_rect(topleft=(score_rect.topright[0] + info_spacing, info_line_y))
-        pygame.draw.rect(screen, LIGHT_BLUE, level_rect.inflate(10, 5))
+        level_text = font.render(f"Level: {current_level}", True, white)
+        level_rect = level_text.get_rect(topleft = (score_rect.topright[0] + info_spacing, info_line_y))
+        pygame.draw.rect(screen, light_blue, level_rect.inflate(10, 5))
         screen.blit(level_text, level_rect)
         
-        lives_text = font.render(f"Lives: {lives}", True, WHITE)
-        lives_rect = lives_text.get_rect(topleft=(level_rect.topright[0] + info_spacing, info_line_y))
-        pygame.draw.rect(screen, RED, lives_rect.inflate(10, 5))
+        lives_text = font.render(f"Lives: {lives}", True, white)
+        lives_rect = lives_text.get_rect(topleft = (level_rect.topright[0] + info_spacing, info_line_y))
+        pygame.draw.rect(screen, red, lives_rect.inflate(10, 5))
         screen.blit(lives_text, lives_rect)
         
-        speedx_text = font.render(f"x-Speed: {ball_speed[0]}", True, WHITE)
-        speedx_rect = speedx_text.get_rect(topleft=(lives_rect.topright[0] + info_spacing, info_line_y))
-        pygame.draw.rect(screen, BLACK, speedx_rect.inflate(10, 5))
+        speedx_text = font.render(f"x-Speed: {ball_speed[0]}", True, white)
+        speedx_rect = speedx_text.get_rect(topleft = (lives_rect.topright[0] + info_spacing, info_line_y))
+        pygame.draw.rect(screen, black, speedx_rect.inflate(10, 5))
         screen.blit(speedx_text, speedx_rect)
         
-        speedy_text = font.render(f"y-Speed: {ball_speed[1]}", True, WHITE)
-        speedy_rect = speedy_text.get_rect(topleft=(speedx_rect.topright[0] + info_spacing, info_line_y))
-        pygame.draw.rect(screen, BLACK, speedy_rect.inflate(10, 5))
+        speedy_text = font.render(f"y-Speed: {ball_speed[1]}", True, white)
+        speedy_rect = speedy_text.get_rect(topleft = (speedx_rect.topright[0] + info_spacing, info_line_y))
+        pygame.draw.rect(screen, black, speedy_rect.inflate(10, 5))
         screen.blit(speedy_text, speedy_rect)
 
         pygame.display.flip()
