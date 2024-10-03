@@ -2,37 +2,41 @@ import pygame
 
 pygame.init()
 
-disp = pygame.display.set_mode((640, 480), pygame.DOUBLEBUF)
+width, height = 800, 600
+screen = pygame.display.set_mode((width, height))
 
-color_value = 0
+pygame.display.set_caption('Portal')
+screen.fill((0, 0, 0))
 
-def rainbow_color(value):
-    step = (value // 256) % 6
-    pos = value % 256
+player = pygame.Surface((50, 50))
+player.fill((255, 0, 0))
 
-    if step == 0:
-        return (255, pos, 0)
-    if step == 1:
-        return (255-pos, 255, 0)
-    if step == 2:
-        return (0, 255, pos)
-    if step == 3:
-        return (0, 255-pos, 255)
-    if step == 4:
-        return (pos, 0, 255)
-    if step == 5:
-        return (255, 0, 255-pos)
+background = pygame.Surface((width, height))
+background.fill((0, 0, 255))
+screen.blit(background, (0, 0))
+
+screen.blit(player, (width // 2 - 25, height // 2 - 25))
+player_pos = [width // 2 - 25, height // 2 - 25]
 
 running = True
-
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-
-    disp.fill( rainbow_color(color_value) )
+    
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_UP]:
+        player_pos[1] -= 5
+    if keys[pygame.K_DOWN]:
+        player_pos[1] += 5
+    if keys[pygame.K_LEFT]:
+        player_pos[0] -= 5
+    if keys[pygame.K_RIGHT]:
+        player_pos[0] += 5
+    
+    screen.blit(player, player_pos)
     pygame.display.flip()
-
-    color_value = (color_value + 1) % (256 * 6)
-
+    
+    
+    
 pygame.quit()
