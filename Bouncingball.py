@@ -22,8 +22,8 @@ def main():
     pygame.display.set_caption('Bouncing Ball Game')
     font = pygame.font.Font(None, 36)
     
-    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
-    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
+    # PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = WIDTH, 20
+    PLATFORM_WIDTH1, PLATFORM_HEIGHT1 = 150, 20
     platform_pos1 = [WIDTH // 2 - PLATFORM_WIDTH1 // 2, HEIGHT - PLATFORM_HEIGHT1 - 10]
     platform_speed = 12
     platform_color = ORANGE
@@ -142,7 +142,6 @@ def main():
         return (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))      
 
     start_screen()
-    platform_speed = 10
     game_running = True
     while game_running:
         if 0 < ball_speed[0] < 6:
@@ -237,7 +236,7 @@ def main():
             if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
                 ball_speed[0] = -ball_speed[0] * 1.05
                 if (platform_speed < 22):
-                    platform_speed *= 1.1
+                    platform_speed *= 1.05
             else:
                 ball_speed[0] = -ball_speed[0]
             ball_color = change_ball_color()
