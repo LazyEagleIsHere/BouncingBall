@@ -50,18 +50,21 @@ def main():
   portal2_dir = [0, 0]
 
   def start_screen():
-    i = 0
+    # i = 0
     start = True
     while start:
       # screen.fill(rainbow_color(i))
       # i = (i + 1) % ((background_colour + 1) * 6)
 
       screen.fill(black)
+      
       show_text_on_screen("Bouncing Ball Game", 100, height // 4)
       show_text_on_screen("Press spacebar to start...", 50, height // 2)
       show_text_on_screen("Move the platform with arrow keys...", 45, height // 1.5)
       show_text_on_screen("Your mission is to get 40 points", 100, height // 1.2)
+      
       pygame.display.flip()
+      
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -128,16 +131,19 @@ def main():
 
   def victory_screen():
     win = True
-    i = 0
+    # i = 0
     while win:
       # screen.fill(rainbow_color(i))
       # i = (i + 1) % ((background_colour + 1) * 6)
 
       screen.fill(black)
+      
       show_text_on_screen("Congratulations!", 100, height // 4)
       show_text_on_screen("You Win! :D", 50, height // 2)
       show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
+      
       pygame.display.flip()
+
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
           pygame.quit()
@@ -179,6 +185,8 @@ def main():
   start_screen()
   game_running = True
   while game_running:
+    
+    # ball horizontal speed
     if 0 < ball_speed[0] < 6:
       ball_speed[0] = random.uniform(6, 8)
     if -6 < ball_speed[0] < 0:
@@ -186,6 +194,7 @@ def main():
     if ball_speed[0] == 0:
       ball_speed[0] = random.uniform(-8, 8)
 
+    # ball vertical speed    
     if 0 < ball_speed[1] < 6:
       ball_speed[1] = random.uniform(6, 8)
     if -6 < ball_speed[1] < 0:
@@ -194,6 +203,7 @@ def main():
       ball_speed[1] = random.uniform(-8, 8)
 
     show_text_on_screen(str(ball_speed), 30, height // 5)
+    
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         pygame.quit()
@@ -205,6 +215,7 @@ def main():
         elif event.key == pygame.K_LSHIFT:
           main()
 
+    # keys operation  
     keys = pygame.key.get_pressed()
     platform_pos1[0] += ((keys[pygame.K_RIGHT] - keys[pygame.K_LEFT]) * platform_speed) - ((keys[pygame.K_a] - keys[pygame.K_d]) * platform_speed)
     if keys[pygame.K_RIGHT] and keys[pygame.K_d]:
@@ -215,10 +226,16 @@ def main():
     ball_pos[0] += ball_speed[0]
     ball_pos[1] += ball_speed[1]
 
-    if (portal1_pos[0] - ball_radius <= ball_pos[0] <= portal1_pos[0] + portal1_width + ball_radius and portal1_pos[1] - ball_radius <= ball_pos[1] <= portal1_pos[1] + portal1_height + ball_radius):
+    # portal feature: red portal is spin, orange portal is teleport
+    
+    # red portal settings
+    # ball and portal collide
+    if (portal1_pos[0] - ball_radius <= ball_pos[0] <= portal1_pos[0] + portal1_width + ball_radius 
+        and portal1_pos[1] - ball_radius <= ball_pos[1] <= portal1_pos[1] + portal1_height + ball_radius):
       ball_pos[0] = random.uniform(portal2_pos[0] - ball_radius, portal2_pos[0] + portal2_width + ball_radius)
       ball_pos[1] = random.uniform(portal2_pos[1] - ball_radius, portal2_pos[1] + portal2_height + ball_radius)
 
+    # portal change dir
     if (portal1_pos[0] - ball_radius - 2 <= 0):
       portal1_dir[0] = 0
 
@@ -241,10 +258,14 @@ def main():
     else:
       portal1_pos[1] -= portal_speed[1]
 
-    if (portal2_pos[0] - ball_radius <= ball_pos[0] <= portal2_pos[0] + portal2_width + ball_radius and portal2_pos[1] - ball_radius <= ball_pos[1] <= portal2_pos[1] + portal2_height + ball_radius):
+    # orange portal settings
+    # ball and portal collide
+    if (portal2_pos[0] - ball_radius <= ball_pos[0] <= portal2_pos[0] + portal2_width + ball_radius 
+        and portal2_pos[1] - ball_radius <= ball_pos[1] <= portal2_pos[1] + portal2_height + ball_radius):
       ball_pos[0] = random.uniform(portal1_pos[0] - ball_radius, portal1_pos[0] + portal1_width + ball_radius)
       ball_pos[1] = random.uniform(portal1_pos[1] - ball_radius, portal1_pos[1] + portal1_height + ball_radius)
 
+    #portal change dir
     if (portal2_pos[0] - ball_radius - 2 <= 0):
       portal2_dir[0] = 1
 
@@ -267,6 +288,8 @@ def main():
     else:
       portal2_pos[1] -= portal_speed[1]
 
+    # level up:
+    # ball speed increase
     if ball_pos[0] - ball_radius - 5 <= 0 or ball_pos[0] + ball_radius + 5 >= width:
       if ((score % 2 == 0 and score != 0) and ball_speed[0] < current_level * 10 and ball_speed[0] > -(current_level * 10)):
         ball_speed[0] = -ball_speed[0] * 1.05
@@ -285,12 +308,14 @@ def main():
         ball_speed[1] = -ball_speed[1]
       ball_color = change_ball_color()
 
+    # ball and playform collide
     if (platform_pos1[0] <= ball_pos[0] <= platform_pos1[0] + platform_width1 and platform_pos1[1] + 10 <= ball_pos[1] + ball_radius <= platform_pos1[1] + platform_height1):
+      # conservation of energy
       if (keys[pygame.K_LEFT] and keys[pygame.K_a]):
         if (ball_speed[0] > 0):
-          ball_speed -= (platform_speed / 3)
+          ball_speed[0] -= (platform_speed / 3)
         else:
-          ball_speed += (platform_speed / 3)
+          ball_speed[0] += (platform_speed / 3)
       if (keys[pygame.K_RIGHT] and keys[pygame.K_d]):
         if (ball_speed[0] > 0):
           ball_speed[0] += (platform_speed / 2.5)
@@ -298,6 +323,7 @@ def main():
           ball_speed[0] -= (platform_speed / 2.25)
       ball_speed[1] = -ball_speed[1]
       score += 1
+      # change ball colour after catch the ball (collide with platform)
       ball_color = change_ball_color()
 
     if score >= current_level * 10:
@@ -307,13 +333,19 @@ def main():
       lives += 1
       platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
       if platform_width1 < width // 2 - 1000:
-        platform_width1 *= 1.25
-        if (platform_height1 <= 150):
-          platform_height1 *= 1.05
+        # platform_width1 *= 1.25
+        platform_width1 *= 1.5
+        # if (platform_height1 <= 150):
+        #   platform_height1 *= 1.05
+        
+      # reset ball position
       ball_pos = [width // 2, height // 2]
+      
+      # change platform and ball colour for each level
       platform_color = change_platform_color()
       ball_color = change_ball_color()
 
+    # cannot catch ball
     if ball_pos[1] >= height:
       lives -= 1
       platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
@@ -336,9 +368,10 @@ def main():
 
     pygame.draw.circle(screen, ball_color, (int(ball_pos[0]), int(ball_pos[1])), ball_radius)
     pygame.draw.rect(screen, platform_color, (int(platform_pos1[0]), int(platform_pos1[1]) + 10, platform_width1, platform_height1))
-    pygame.draw.rect(screen, red, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
-    pygame.draw.rect(screen, orange, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
+    pygame.draw.rect(screen, red, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height)) # red portal
+    pygame.draw.rect(screen, orange, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height)) # orange portal
 
+    # count score
     info_line_y = 10
     info_spacing = 75
     score_text = font.render(f"Score: {score}", True, white)
@@ -346,21 +379,25 @@ def main():
     pygame.draw.rect(screen, orange, score_rect.inflate(10, 5))
     screen.blit(score_text, score_rect)
 
+    # show current level
     level_text = font.render(f"Level: {current_level}", True, white)
     level_rect = level_text.get_rect(topleft = (score_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, light_blue, level_rect.inflate(10, 5))
     screen.blit(level_text, level_rect)
 
+    # show remaining lives
     lives_text = font.render(f"Lives: {lives}", True, white)
     lives_rect = lives_text.get_rect(topleft = (level_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, red, lives_rect.inflate(10, 5))
     screen.blit(lives_text, lives_rect)
 
+    # horizontal speed
     speedx_text = font.render(f"x-Speed: {ball_speed[0]}", True, white)
     speedx_rect = speedx_text.get_rect(topleft = (lives_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, black, speedx_rect.inflate(10, 5))
     screen.blit(speedx_text, speedx_rect)
 
+    # vertical speed
     speedy_text = font.render(f"y-Speed: {ball_speed[1]}", True, white)
     speedy_rect = speedy_text.get_rect(topleft = (speedx_rect.topright[0] + info_spacing, info_line_y))
     pygame.draw.rect(screen, black, speedy_rect.inflate(10, 5))
