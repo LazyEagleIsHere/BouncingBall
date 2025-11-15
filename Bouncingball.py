@@ -2,6 +2,8 @@ import pygame
 import sys
 import random
 import time
+import requests
+import socket
 
 pygame.init()
 
@@ -23,8 +25,8 @@ def main():
   pygame.display.set_caption('Bouncing Ball Game')
   font = pygame.font.Font(None, 36)
 
-  platform_width1, platform_height1 = width, 20
-  # platform_width1, platform_height1 = 150, 20
+  # platform_width1, platform_height1 = width, 20
+  platform_width1, platform_height1 = 150, 20
   platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
   platform_speed = 12
   platform_color = orange
@@ -49,6 +51,17 @@ def main():
   portal2_pos = [width - 200, height - 250]
   portal2_dir = [0, 0]
 
+  def submit_score(score, level = None):
+    try:
+      payload = {
+        "score": int(score), 
+        "level": level, 
+      }
+      requests.post("http://YOUR_SERVER_HOST:8000/api/submit-score", json=payload, timeout=3)
+    
+    except Exception as e:
+      print("Score submit failed:", e)
+  
   def start_screen():
     # i = 0
     start = True
@@ -350,6 +363,7 @@ def main():
       lives -= 1
       platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
       if lives == 0:
+        submit_score(score, current_level)
         end_screen()
         main()
         score = 0
@@ -361,6 +375,7 @@ def main():
           ball_speed[1] = -ball_speed[1]
 
     if score == 40:
+      submit_score(score, current_level)
       victory_screen()
       main()
 
