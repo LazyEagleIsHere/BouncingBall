@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>BouncingBall Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    th { background: #f6f6f6; }
+    .meta { color: #666; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h1>BouncingBall Leaderboard</h1>
+  <p class="meta">Sorted by score (desc), ties by shortest duration.</p>
+  <table id="lb">
+    <thead>
+      <tr>
+        <th>#</th><th>Name</th><th>Score</th><th>Level</th><th>Duration (s)</th><th>Time</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <script>
+    async function loadLB() {
+      const res = await fetch("/leaderboard/top")
+      const data = await res.json()
+      const tbody = document.querySelector("#lb tbody")
+      tbody.innerHTML = ""
+      data.forEach((row, i) => {
+        const tr = document.createElement("tr")
+        const dur = (row.duration_ms/1000).toFixed(2)
+        tr.innerHTML = `<td>${i+1}</td><td>${row.name}</td><td>${row.score}</td><td>${row.level}</td><td>${dur}</td><td>${new Date(row.created_at).toLocaleString()}</td>`
+        tbody.appendChild(tr)
+      })
+    }
+    loadLB()
+    setInterval(loadLB, 10000)
+  </script>
+</body>
+</html>
