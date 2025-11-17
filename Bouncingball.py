@@ -10,7 +10,7 @@ pygame.init()
 def main():
   display_info = pygame.display.Info()
   width, height = display_info.current_w, display_info.current_h
-  FPS = 100
+  FPS = 60
   clock = pygame.time.Clock()
 
   black = (0, 0, 0)
@@ -25,8 +25,8 @@ def main():
   pygame.display.set_caption('Bouncing Ball Game')
   font = pygame.font.Font(None, 36)
 
-  # platform_width1, platform_height1 = width, 20
-  platform_width1, platform_height1 = 150, 20
+  platform_width1, platform_height1 = width, height // 2 - 50
+  # platform_width1, platform_height1 = 150, 20
   platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
   platform_speed = 12
   platform_color = orange
@@ -58,6 +58,7 @@ def main():
         "level": level, 
       }
       requests.post("http://YOUR_SERVER_HOST:8000/api/submit-score", json=payload, timeout=3)
+      # requests.post("http://127.0.0.1:5500/index.html", json=payload, timeout=3)
     
     except Exception as e:
       print("Score submit failed:", e)
@@ -73,8 +74,9 @@ def main():
       
       show_text_on_screen("Bouncing Ball Game", 100, height // 4)
       show_text_on_screen("Press spacebar to start...", 50, height // 2)
-      show_text_on_screen("Move the platform with arrow keys...", 45, height // 1.5)
-      show_text_on_screen("Your mission is to get 40 points", 100, height // 1.2)
+      show_text_on_screen("Move the platform with arrow keys...", 65, height // 1.5)
+      # show_text_on_screen("Your mission is to get 40 points", 100, height // 1.2)
+      show_text_on_screen("Mission: Try your best to aim for as high a score as possible", 85, height // 1.2)
       
       pygame.display.flip()
       
@@ -374,10 +376,10 @@ def main():
         if (ball_speed[1] > 0):
           ball_speed[1] = -ball_speed[1]
 
-    if score == 40:
-      submit_score(score, current_level)
-      victory_screen()
-      main()
+    # if score == 40:
+    #   submit_score(score, current_level)
+    #   victory_screen()
+    #   main()
 
     screen.fill(screen_color)
 
