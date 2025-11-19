@@ -25,8 +25,8 @@ def main():
   pygame.display.set_caption('Bouncing Ball Game')
   font = pygame.font.Font(None, 36)
 
-  platform_width1, platform_height1 = width, height // 2 - 50
-  # platform_width1, platform_height1 = 150, 20
+  # platform_width1, platform_height1 = width, height // 2 - 50
+  platform_width1, platform_height1 = 150, 20
   platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
   platform_speed = 20
   platform_color = orange
@@ -43,11 +43,11 @@ def main():
 
   portal_speed = [3, 3]
 
-  portal1_width, portal1_height = 100, 100
+  portal1_width, portal1_height = 60, 60
   portal1_pos = [200, 200]
   portal1_dir = [0, 0]
 
-  portal2_width, portal2_height = 100, 100
+  portal2_width, portal2_height = portal1_width, portal1_height
   portal2_pos = [width - 200, height - 250]
   portal2_dir = [0, 0]
 
