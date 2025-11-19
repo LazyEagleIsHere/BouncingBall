@@ -28,13 +28,13 @@ def main():
   platform_width1, platform_height1 = width, height // 2 - 50
   # platform_width1, platform_height1 = 150, 20
   platform_pos1 = [width // 2 - platform_width1 // 2, height - platform_height1 - 10]
-  platform_speed = 12
+  platform_speed = 20
   platform_color = orange
 
   ball_radius = 30
   ball_color = white
   ball_pos = [width // 2, height // 2]
-  ball_speed = [random.uniform(random.uniform(6, 8), random.uniform(-6, -8)), random.uniform(-6, -8)]
+  ball_speed = [random.uniform(random.uniform(3, 5), random.uniform(-3, -5)), random.uniform(-3, -5)]
 
   score = 0
   lives = 3
