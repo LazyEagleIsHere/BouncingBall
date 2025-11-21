@@ -247,14 +247,15 @@ def main():
       lives += 2
       if platform_width <= width // 2:
         platform_width = min(platform_width, platform_width * 1.25)
-      balls.append({
-        pos: pygame.Vector2(width // 2, height // 2),
-        speed: pygame.Vector2(random.choice([random.uniform(6, 7), random.uniform(-7, -6)]),
-                          random.uniform(-9, -7)),
-        colour: change_ball_color(),
-        radius: 30,
-        "teleport_cooldown": 0
-      })
+      if len(balls) <= 9:
+        balls.append({
+          pos: pygame.Vector2(width // 2, height // 2),
+          speed: pygame.Vector2(random.choice([random.uniform(6, 7), random.uniform(-7, -6)]),
+                            random.uniform(-9, -7)),
+          colour: change_ball_color(),
+          radius: 30,
+          "teleport_cooldown": 0
+        })
 
     # portal movement logic (unchanged)
     if (portal1_pos[0] - 75 <= 0):
