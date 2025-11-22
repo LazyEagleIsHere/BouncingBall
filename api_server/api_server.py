@@ -5,8 +5,8 @@ app = Flask(__name__)
 
 # MySQL config
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'gameclient'
-app.config['MYSQL_PASSWORD'] = 'yourpassword'
+app.config['MYSQL_USER'] = 'BouncingBall'
+app.config['MYSQL_PASSWORD'] = 'Admin1234'
 app.config['MYSQL_DB'] = 'leaderboard'
 
 mysql = MySQL(app)
