@@ -1,0 +1,9 @@
+CREATE DATABASE leaderboard;
+USE leaderboard;
+
+CREATE TABLE scores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(50),
+  score INT,
+  timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+);
