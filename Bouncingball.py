@@ -23,20 +23,6 @@ screen_color = black
 pygame.display.set_caption('Bouncing Ball Game')
 font = pygame.font.Font(None, 36)
 
-def post_score_to_server(name, score):
-  try:
-    url = "http://192.168.11.114:5000/scores"
-    payload = {"name": name, "score": score}
-    # payload = {"score": score}
-    r = requests.post(url, json=payload, timeout=3)
-    if r.status_code == 201:
-      print("Score posted successfully.")
-    else:
-      print("Failed to post score:", r.text)
-  except Exception as e:
-    print("Error posting score:", e)
-
-
 def show_text_on_screen(text, font_size, y_position):
   font_local = pygame.font.Font(None, font_size)
   text_render = font_local.render(text, True, gray)
@@ -115,7 +101,6 @@ def end_screen(final_score):
   show_text_on_screen("Good Try! :)", 100, height // 4)
   show_text_on_screen(f"Your final score: {final_score}", 50, height // 2)
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
-  post_score_to_server("e", final_score)
   pygame.display.flip()
   wait_for_key()
   start_screen()
