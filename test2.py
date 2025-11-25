@@ -3,7 +3,6 @@ import sys
 import random
 import time
 import requests
-import socket
 
 pygame.init()
 
@@ -24,11 +23,34 @@ screen_color = black
 pygame.display.set_caption('Bouncing Ball Game')
 font = pygame.font.Font(None, 36)
 
+API_BASE = "http://localhost:3000/api"
+
+def submit_score(username, score):
+    try:
+        res = requests.post(f"{API_BASE}/score", json={"username": username, "score": score})
+        print("Score submitted:", res.json())
+    except Exception as e:
+        print("Error submitting score:", e)
+
+
+
 def show_text_on_screen(text, font_size, y_position):
   font_local = pygame.font.Font(None, font_size)
   text_render = font_local.render(text, True, gray)
   text_rect = text_render.get_rect(center=(width // 2, y_position))
   screen.blit(text_render, text_rect)
+
+def draw(text, font_size, y_position):
+  font_local = pygame.font.Font(None, font_size)
+  text_render = font_local.render(text, True, gray)
+  text_rect = text_render.get_rect(center=(width // 2, y_position))
+  screen.blit(text_render, text_rect)
+
+def change_platform_color():
+  return (random.randint(110, 255), random.randint(110, 255), random.randint(110, 255))
+
+def change_ball_color():
+  return (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
 
 def start_screen():
   start = True
@@ -46,15 +68,10 @@ def start_screen():
       elif event.type == pygame.KEYDOWN:
         if event.key == pygame.K_SPACE:
           start = False
+          cntdown()
         elif event.key == pygame.K_ESCAPE:
           pygame.quit()
           sys.exit()
-
-def draw(text, font_size, y_position):
-  font_local = pygame.font.Font(None, font_size)
-  text_render = font_local.render(text, True, gray)
-  text_rect = text_render.get_rect(center=(width // 2, y_position))
-  screen.blit(text_render, text_rect)
 
 def cntdown():
   screen.fill(black)
@@ -73,22 +90,8 @@ def cntdown():
           sys.exit()
     time.sleep(1)
     screen.fill(black)
-
-def rainbow_color(value, background_colour=125):
-  step = (value // 126) % 6
-  pos = value % 126
-  if step == 0:
-    return (background_colour, pos, 0)
-  if step == 1:
-    return (background_colour - pos, background_colour, 0)
-  if step == 2:
-    return (0, background_colour, pos)
-  if step == 3:
-    return (0, background_colour - pos, background_colour)
-  if step == 4:
-    return (pos, 0, background_colour)
-  if step == 5:
-    return (background_colour, 0, background_colour - pos)
+  
+  main()
 
 def wait_for_key():
   waiting = True
@@ -109,8 +112,11 @@ def end_screen(final_score):
   show_text_on_screen("Good Try! :)", 100, height // 4)
   show_text_on_screen(f"Your final score: {final_score}", 50, height // 2)
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
+  submit_score("e", final_score)
   pygame.display.flip()
+  submit_score("e", final_score)
   wait_for_key()
+  start_screen()
 
 def victory_screen():
   win = True
@@ -131,50 +137,39 @@ def victory_screen():
           pygame.quit()
           sys.exit()
 
-def change_platform_color():
-  return (random.randint(110, 255), random.randint(110, 255), random.randint(110, 255))
-
-def change_ball_color():
-  return (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-
-def submit_score(score, level=None):
-  try:
-    payload = {"score": int(score), "level": level}
-    # requests.post("http://YOUR_SERVER_HOST:8000/api/submit-score", json=payload, timeout=3)
-  except Exception as e:
-    print("Score submit failed:", e)
-
 def main():
   pos = "pos"
   speed = "speed"
   colour = "colour"
   radius = "radius"
 
+  # platform_width, platform_height = width, 100
   platform_width, platform_height = 150, 20
   platform_pos = [width // 2 - platform_width // 2, height - platform_height - 10]
   platform_speed = 20
   platform_color = orange
 
   balls = [{
-    pos: [width // 2, height // 2],
-    speed: [random.choice([random.uniform(3, 5), random.uniform(-5, -3)]),
-            random.uniform(-5, -3)],  # start upward
+    pos: pygame.Vector2(width // 2, height // 2),
+    speed: pygame.Vector2(random.choice([random.uniform(6, 8), random.uniform(-8, -6)]),
+                          random.uniform(-7, -6)),
     colour: white,
     radius: 30,
     "teleport_cooldown": 0
   }]
-
+  max_v = 9
+  
   score = 0
   lives = 3
   current_level = 1
   last_level_up_score = 0
-  background_colour = 125
 
   portal_speed = [3, 3]
-  portal1_width, portal1_height = 100, 100
+  portal1_width, portal1_height = 75, 75
   portal1_pos = [200, 200]
   portal1_dir = [0, 0]
-  portal2_width, portal2_height = 100, 100
+  
+  portal2_width, portal2_height = portal1_width, portal1_height
   portal2_pos = [width - 200, height - 250]
   portal2_dir = [0, 0]
 
@@ -188,6 +183,9 @@ def main():
         if event.key == pygame.K_ESCAPE:
           pygame.quit()
           sys.exit()
+        elif event.key == pygame.K_LSHIFT:
+          game_running = False
+          start_screen()
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -197,104 +195,132 @@ def main():
     platform_pos[0] = max(0, min(platform_pos[0], width - platform_width))
 
     for b in balls:
-      if b.get("teleport_cooldown", 0) > 0:
-        b["teleport_cooldown"] -= 1
+      b[pos] += b[speed]
 
-      b[pos][0] += b[speed][0]
-      b[pos][1] += b[speed][1]
-
-      if b[pos][0] - b[radius] <= 0 or b[pos][0] + b[radius] >= width:
-        b[speed][0] = -b[speed][0] * 1.05
+      if b[pos].x - b[radius] <= 0 or b[pos].x + b[radius] >= width:
+        b[speed].x = -b[speed].x * 1.05
         b[colour] = change_ball_color()
 
-      if b[pos][1] - b[radius] <= 0:
-        b[speed][1] = -b[speed][1] * 1.05
+      if b[pos].y - b[radius] <= 0:
+        b[speed].y = -b[speed].y * 1.05
         b[colour] = change_ball_color()
 
-      if (platform_pos[0] <= b[pos][0] <= platform_pos[0] + platform_width and
-          platform_pos[1] <= b[pos][1] + b[radius] <= platform_pos[1] + platform_height):
-        b[speed][1] = -b[speed][1]
+      if b[speed].x > max_v:
+        b[speed].x = max_v
+      elif b[speed].x < -max_v:
+        b[speed].x = -max_v
+      
+      if b[speed].y > max_v:
+        b[speed].y = max_v
+      elif b[speed].y < -max_v:
+        b[speed].y = -max_v
+      
+      if (platform_pos[0] <= b[pos].x <= platform_pos[0] + platform_width and
+          platform_pos[1] <= b[pos].y + b[radius] <= platform_pos[1] + platform_height):
+        b[pos].y = platform_pos[1] - b[radius]
+        b[speed].y = -abs(b[speed].y)
         score += 1
         b[colour] = change_ball_color()
 
-      in_portal1 = (portal1_pos[0] - b[radius] <= b[pos][0] <= portal1_pos[0] + portal1_width + b[radius] and
-                    portal1_pos[1] - b[radius] <= b[pos][1] <= portal1_pos[1] + portal1_height + b[radius])
-      in_portal2 = (portal2_pos[0] - b[radius] <= b[pos][0] <= portal2_pos[0] + portal2_width + b[radius] and
-                    portal2_pos[1] - b[radius] <= b[pos][1] <= portal2_pos[1] + portal2_height + b[radius])
+      # --- PORTAL COLLISION WITH COOLDOWN ---
+      if b["teleport_cooldown"] > 0:
+        b["teleport_cooldown"] -= 1/FPS
+      else:
+        ball_rect = pygame.Rect(b[pos].x - b[radius], b[pos].y - b[radius],
+                                b[radius]*2, b[radius]*2)
+        portal1_rect = pygame.Rect(portal1_pos[0], portal1_pos[1], portal1_width, portal1_height)
+        portal2_rect = pygame.Rect(portal2_pos[0], portal2_pos[1], portal2_width, portal2_height)
 
-      if in_portal1 and b.get("teleport_cooldown", 0) == 0:
-        b[pos][0] = random.uniform(portal2_pos[0] - b[radius], portal2_pos[0] + portal2_width + b[radius])
-        b[pos][1] = random.uniform(portal2_pos[1] - b[radius], portal2_pos[1] + portal2_height + b[radius])
-        b["teleport_cooldown"] = 15
+        change_speed = random.uniform(0.75, 1.55)
+        
+        if portal1_rect.colliderect(ball_rect):
+          b[pos] = pygame.Vector2(portal2_rect.centerx, portal2_rect.top - b[radius] - 5)
+          b["teleport_cooldown"] = 0.5
+          b[speed].x *= change_speed
+          b[speed].y *= change_speed
 
-      if in_portal2 and b.get("teleport_cooldown", 0) == 0:
-        b[pos][0] = random.uniform(portal1_pos[0] - b[radius], portal1_pos[0] + portal1_width + b[radius])
-        b[pos][1] = random.uniform(portal1_pos[1] - b[radius], portal1_pos[1] + portal1_height + b[radius])
-        b["teleport_cooldown"] = 15
+        elif portal2_rect.colliderect(ball_rect):
+          b[pos] = pygame.Vector2(portal1_rect.centerx, portal1_rect.top - b[radius] - 5)
+          b["teleport_cooldown"] = 0.5
+          b[speed].x *= change_speed
+          b[speed].y *= change_speed
+      # --- END PORTAL COLLISION ---
 
-      if b[pos][1] >= height:
+      if b[pos].y >= height:
         lives -= 1
-        b[pos] = [width // 2, height // 2]
-        b[speed][1] = random.uniform(-5, -3)
-        b[speed][0] = random.choice([random.uniform(3, 5), random.uniform(-5, -3)])
+        b[pos] = pygame.Vector2(width // 2, height // 2)
+        b[speed].y = random.uniform(-9, -7)
+        b[speed].x = random.choice([random.uniform(6, 7), random.uniform(-7, -6)])
+        
         if lives == 0:
-          submit_score(score, current_level)
           end_screen(score)
           return
 
-    if score % 5 == 0 and score != 0 and last_level_up_score != score:
+    if score % 10 == 0 and score != 0 and last_level_up_score != score:
       last_level_up_score = score
       current_level += 1
       lives += 2
-      balls.append({
-        pos: [width // 2, height // 2],
-        speed: [random.choice([random.uniform(3, 5), random.uniform(-5, -3)]),
-                random.uniform(-5, -3)],
-        colour: change_ball_color(),
-        radius: 30,
-        "teleport_cooldown": 0
-      })
+      if platform_width <= width // 2:
+        platform_width = min(platform_width, platform_width * 1.25)
+      if len(balls) <= 9:
+        balls.append({
+          pos: pygame.Vector2(width // 2, height // 2),
+          speed: pygame.Vector2(random.choice([random.uniform(6, 7), random.uniform(-7, -6)]),
+                            random.uniform(-9, -7)),
+          colour: change_ball_color(),
+          radius: 30,
+          "teleport_cooldown": 0
+        })
 
-    if (portal1_pos[0] - 2 <= 0):
+    # portal movement logic (unchanged)
+    if (portal1_pos[0] - 75 <= 0):
       portal1_dir[0] = 0
-    if (portal1_pos[0] + portal1_width + 2 >= width):
+    if (portal1_pos[0] + portal1_width + 75 >= width):
       portal1_dir[0] = 1
-    if (portal1_pos[1] - 2 <= 0):
+    if (portal1_pos[1] - 75 <= 0):
       portal1_dir[1] = 1
-    if (portal1_pos[1] + portal1_height >= height):
+    if (portal1_pos[1] + portal1_height + 175 >= height):
       portal1_dir[1] = 0
+
     if (portal1_dir[0] == 0):
       portal1_pos[0] += portal_speed[0]
     else:
       portal1_pos[0] -= portal_speed[0]
+
     if (portal1_dir[1] == 1):
       portal1_pos[1] += portal_speed[1]
     else:
       portal1_pos[1] -= portal_speed[1]
 
-    if (portal2_pos[0] - 2 <= 0):
+    if (portal2_pos[0] - 75 <= 0):
       portal2_dir[0] = 1
-    if (portal2_pos[0] + portal2_width + 2 >= width):
+    if (portal2_pos[0] + portal2_width + 75 >= width):
       portal2_dir[0] = 0
-    if (portal2_pos[1] - 2 <= 0):
+    if (portal2_pos[1] - 75 <= 0):
       portal2_dir[1] = 0
-    if (portal2_pos[1] + portal2_height >= height):
+    if (portal2_pos[1] + portal2_height + 175 >= height):
       portal2_dir[1] = 1
+
     if (portal2_dir[0] == 1):
       portal2_pos[0] += portal_speed[0]
     else:
       portal2_pos[0] -= portal_speed[0]
+
     if (portal2_dir[1] == 0):
       portal2_pos[1] += portal_speed[1]
     else:
       portal2_pos[1] -= portal_speed[1]
 
+    # draw everything
     screen.fill(screen_color)
     for b in balls:
-      pygame.draw.circle(screen, b[colour], (int(b[pos][0]), int(b[pos][1])), b[radius])
-    pygame.draw.rect(screen, platform_color, (int(platform_pos[0]), int(platform_pos[1]), platform_width, platform_height))
-    pygame.draw.rect(screen, red, (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
-    pygame.draw.rect(screen, orange, (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
+      pygame.draw.circle(screen, b[colour], (int(b[pos].x), int(b[pos].y)), b[radius])
+    pygame.draw.rect(screen, platform_color,
+                     (int(platform_pos[0]), int(platform_pos[1]), platform_width, platform_height))
+    pygame.draw.rect(screen, red,
+                     (int(portal1_pos[0]), int(portal1_pos[1]), portal1_width, portal1_height))
+    pygame.draw.rect(screen, orange,
+                     (int(portal2_pos[0]), int(portal2_pos[1]), portal2_width, portal2_height))
 
     info_line_y = 10
     info_spacing = 75
@@ -317,8 +343,5 @@ def main():
     pygame.display.flip()
     clock.tick(FPS)
 
-if __name__ == "__main__":
-  while True:
-    start_screen()   # show intro
-    cntdown()        # 3-2-1
-    main()           # run one round, returns on game over
+start_screen()
+pygame.display.flip()

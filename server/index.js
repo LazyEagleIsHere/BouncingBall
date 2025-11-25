@@ -1,4 +1,9 @@
 require('dotenv').config();
+console.log("Loaded DB_USER:", process.env.DB_USER);
+console.log("Loaded DB_PASSWORD:", process.env.DB_PASSWORD ? "*****" : "missing");
+
+
+require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise');
 const cors = require('cors');
@@ -44,4 +49,5 @@ app.get('/api/leaderboard', async (req, res) => {
   res.json(rows);
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Server running on port ${port}`));

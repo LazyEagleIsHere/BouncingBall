@@ -25,16 +25,13 @@ font = pygame.font.Font(None, 36)
 
 API_BASE = "http://localhost:3000/api"
 
-def submit_score(username, score, mode="classic"):
-    payload = {"username": username, "score": score, "mode": mode}
-    try:
-        res = requests.post(f"{API_BASE}/score", json=payload)
-        if res.status_code == 200 or res.status_code == 201:
-            print("Score submitted successfully!")
-        else:
-            print("Error submitting score:", res.text)
-    except Exception as e:
-        print("Connection error:", e)
+def submit_score(username, score):
+  try:
+    res = requests.post(f"{API_BASE}/score", json={"username": username, "score": score})
+    print("Score submitted:", res.json())
+  except Exception as e:
+    print("Error submitting score:", e)
+
 
 
 def show_text_on_screen(text, font_size, y_position):
@@ -117,6 +114,7 @@ def end_screen(final_score):
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
   submit_score("e", final_score)
   pygame.display.flip()
+  submit_score("e", final_score)
   wait_for_key()
   start_screen()
 

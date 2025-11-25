@@ -12,10 +12,10 @@
 
   <script>
     async function loadLeaderboard() {
-      const res = await fetch('http://localhost:3000/api/leaderboard');
+      const res = await fetch("http://localhost:3000/api/leaderboard");
       const data = await res.json();
-      const tbody = document.querySelector('#board tbody');
-      tbody.innerHTML = '';
+      const tbody = document.querySelector("#board tbody");
+      tbody.innerHTML = "";
       data.forEach((row, i) => {
         tbody.innerHTML += `<tr><td>${i+1}</td><td>${row.username}</td><td>${row.best_score}</td></tr>`;
       });
