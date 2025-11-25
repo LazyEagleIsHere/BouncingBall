@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Score Frequency (1–10)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container { text-align: center; }
+    h1 { margin-bottom: 16px; }
+    .controls { margin-bottom: 16px; }
+    table {
+      border-collapse: collapse;
+      width: 360px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    th { background-color: #007BFF; color: white; }
+    tr:nth-child(even) { background-color: #f9f9f9; }
+    #updated { margin-top: 10px; font-size: 0.9em; color: #555; }
+    button { margin: 0 6px; padding: 8px 12px; cursor: pointer; }
+    input[type="number"] { width: 64px; padding: 6px; }
+    input[type="text"] { width: 140px; padding: 6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Score Frequency (10 → 1)</h1>
+
+    <div class="controls">
+      <!-- Optional quick submit for testing -->
+      <input id="username" type="text" placeholder="username">
+      <input id="score" type="number" min="1" max="10" placeholder="score">
+      <button onclick="submitScore()">Submit score</button>
+      <button onclick="clearData()">Clear data</button>
+      <button onclick="loadLeaderboard()">Refresh</button>
+    </div>
+
+    <table id="board">
+      <thead>
+        <tr><th>Score</th><th>Times achieved</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div id="updated"></div>
+  </div>
+
+  <script>
+    const API_BASE = "http://localhost:3000/api";
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch(`${API_BASE}/leaderboard`);
+        const data = await res.json();
+        const map = new Map(data.map(r => [Number(r.score), Number(r.times)]));
+        const tbody = document.querySelector("#board tbody");
+        tbody.innerHTML = "";
+
+        // Render rows for scores 10 → 1
+        for (let score = 10; score >= 1; score--) {
+          const times = map.get(score) || 0;
+          tbody.innerHTML += `<tr><td>${score}</td><td>${times}</td></tr>`;
+        }
+
+        document.getElementById("updated").textContent =
+          "Last updated: " + new Date().toLocaleTimeString();
+      } catch (err) {
+        console.error("Error loading leaderboard:", err);
+      }
+    }
+
+    async function submitScore() {
+      const username = document.getElementById("username").value.trim();
+      const scoreVal = Number(document.getElementById("score").value);
+
+      if (!username || !Number.isInteger(scoreVal) || scoreVal < 1 || scoreVal > 10) {
+        alert("Enter a username and a score between 1 and 10.");
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/score`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, score: scoreVal })
+        });
+        if (!res.ok) throw new Error("Submit failed");
+        loadLeaderboard();
+      } catch (err) {
+        console.error("Error submitting score:", err);
+        alert("Failed to submit score.");
+      }
+    }
+
+    async function clearData() {
+      if (!confirm("Clear all players and scores?")) return;
+      try {
+        const res = await fetch(`${API_BASE}/clear`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Clear failed");
+        loadLeaderboard();
+      } catch (err) {
+        console.error("Error clearing data:", err);
+        alert("Failed to clear data.");
+      }
+    }
+
+    // Initial load + auto-refresh every 5s
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 5000);
+  </script>
+</body>
+</html>

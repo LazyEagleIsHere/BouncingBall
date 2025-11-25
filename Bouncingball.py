@@ -7,7 +7,8 @@ import requests
 pygame.init()
 
 display_info = pygame.display.Info()
-width, height = display_info.current_w, display_info.current_h
+# width, height = display_info.current_w, display_info.current_h
+width, height = 1000, 1000
 FPS = 60
 clock = pygame.time.Clock()
 
@@ -31,8 +32,6 @@ def submit_score(username, score):
     print("Score submitted:", res.json())
   except Exception as e:
     print("Error submitting score:", e)
-
-
 
 def show_text_on_screen(text, font_size, y_position):
   font_local = pygame.font.Font(None, font_size)

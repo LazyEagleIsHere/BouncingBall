@@ -2,25 +2,89 @@
 <html>
 <head>
   <title>Leaderboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 400px;
+      margin: 0 auto;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    #updated {
+      margin-top: 10px;
+      font-size: 0.9em;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-  <h1>Leaderboard</h1>
-  <table id="board">
-    <thead><tr><th>Rank</th><th>Player</th><th>Score</th></tr></thead>
-    <tbody></tbody>
-  </table>
+  <div class="container">
+    <h1>Leaderboard</h1>
+    <table id="board">
+      <thead>
+        <tr><th>Rank</th><th>Player</th><th>Score</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div id="updated"></div>
+  </div>
 
   <script>
     async function loadLeaderboard() {
-      const res = await fetch("http://localhost:3000/api/leaderboard");
-      const data = await res.json();
-      const tbody = document.querySelector("#board tbody");
-      tbody.innerHTML = "";
-      data.forEach((row, i) => {
-        tbody.innerHTML += `<tr><td>${i+1}</td><td>${row.username}</td><td>${row.best_score}</td></tr>`;
-      });
+      try {
+        const res = await fetch("http://localhost:3000/api/leaderboard");
+        const data = await res.json();
+        const tbody = document.querySelector("#board tbody");
+        tbody.innerHTML = ""; // clear old rows
+        data.forEach((row, i) => {
+          tbody.innerHTML += `<tr><td>${i+1}</td><td>${row.username}</td><td>${row.score}</td></tr>`;
+        });
+        document.getElementById("updated").textContent =
+          "Last updated: " + new Date().toLocaleTimeString();
+      } catch (err) {
+        console.error("Error loading leaderboard:", err);
+      }
     }
+
+    // Load immediately
     loadLeaderboard();
+
+    // Auto-refresh every 5 seconds
+    setInterval(loadLeaderboard, 5000);
   </script>
 </body>
 </html>
