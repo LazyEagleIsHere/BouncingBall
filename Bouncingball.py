@@ -23,6 +23,20 @@ screen_color = black
 pygame.display.set_caption('Bouncing Ball Game')
 font = pygame.font.Font(None, 36)
 
+API_BASE = "http://localhost:3000/api"
+
+def submit_score(username, score, mode="classic"):
+    payload = {"username": username, "score": score, "mode": mode}
+    try:
+        res = requests.post(f"{API_BASE}/score", json=payload)
+        if res.status_code == 200 or res.status_code == 201:
+            print("Score submitted successfully!")
+        else:
+            print("Error submitting score:", res.text)
+    except Exception as e:
+        print("Connection error:", e)
+
+
 def show_text_on_screen(text, font_size, y_position):
   font_local = pygame.font.Font(None, font_size)
   text_render = font_local.render(text, True, gray)
@@ -101,6 +115,7 @@ def end_screen(final_score):
   show_text_on_screen("Good Try! :)", 100, height // 4)
   show_text_on_screen(f"Your final score: {final_score}", 50, height // 2)
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
+  submit_score("e", final_score)
   pygame.display.flip()
   wait_for_key()
   start_screen()
