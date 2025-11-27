@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Leaderboard (Frequency)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container { text-align: center; max-width: 520px; width: 100%; }
+
+    h1 { margin-bottom: 12px; }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    #refreshBtn {
+      padding: 8px 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #refreshBtn:hover { background-color: #218838; }
+
+    .table-container {
+      max-height: 340px;     /* scrollable area */
+      overflow-y: auto;
+      margin: 0 auto;
+      width: 100%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+    }
+
+    table { border-collapse: collapse; width: 100%; }
+
+    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+
+    th {
+      background-color: #007BFF;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:nth-child(even) { background-color: #f9f9f9; }
+
+    #updated { margin-top: 10px; font-size: 0.9em; color: #555; }
+
+    .top-score-row td {
+      background-color: #fff8d6; /* subtle gold highlight */
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Leaderboard (Frequency)</h1>
+
+    <div class="controls">
+      <button id="refreshBtn">Refresh</button>
+      <span id="updated"></span>
+    </div>
+
+    <div class="table-container">
+      <table id="board">
+        <thead>
+          <tr><th>Score</th><th>Frequency</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://localhost:3000/api/leaderboard";
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch(API);
+        if (!res.ok) throw new Error("Network response was not ok");
+        const data = await res.json();
+
+        const tbody = document.querySelector("#board tbody");
+        tbody.innerHTML = "";
+
+        let firstRow = true;
+        data.forEach(row => {
+          const tr = document.createElement("tr");
+          if (firstRow) {
+            tr.classList.add("top-score-row");
+            firstRow = false;
+          }
+          tr.innerHTML = `<td>${row.score}</td><td>${row.times}</td>`;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById("updated").textContent =
+          "Last updated: " + new Date().toLocaleTimeString();
+      } catch (err) {
+        console.error("Error loading leaderboard:", err);
+        document.getElementById("updated").textContent =
+          "Error updating leaderboard";
+      }
+    }
+
+    // Manual refresh
+    document.getElementById("refreshBtn").addEventListener("click", loadLeaderboard);
+
+    // Initial load + auto-refresh every 5s
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 5000);
+  </script>
+</body>
+</html>

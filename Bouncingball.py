@@ -140,8 +140,13 @@ def end_screen(final_score):
   show_text_on_screen("Good Try! :)", 100, height // 4)
   show_text_on_screen(f"Your final score: {final_score}", 50, height // 2)
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
+  # threading.Thread(target = submit_score, args = ("e", final_score), daemon = True).start()
+  # submit_score("e", final_score)
+  t = threading.Thread(target=submit_score, args=("e", final_score))
+  t.start()
+  t.join()  # wait until the request finishes
   pygame.display.flip()
-  threading.Thread(target = submit_score, args = ("e", final_score), daemon = True).start()
+  print("eee")
   wait_for_key()
   start_screen()
 
@@ -452,7 +457,7 @@ def main():
       
       if p[pos][1] - 75 <= 0:
         p[dir][1] = 1
-      if p[pos][1] + h + 75 >= height:
+      if p[pos][1] + h + 175 >= height:
         p[dir][1] = 0
       
       if p[dir][0] == 0:

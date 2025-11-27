@@ -1,4 +1,3 @@
-// server.js
 const express = require("express");
 const mysql = require("mysql2/promise");
 const cors = require("cors");
@@ -16,9 +15,6 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
 });
 
 // Test connection at startup
@@ -36,7 +32,7 @@ const pool = mysql.createPool({
 /**
  * POST /api/score
  * Body: { "username": "Alice", "score": 7 }
- * Records a score for a player.
+ * Records a score for a player. Scores are expected to be integers (1–10).
  */
 app.post("/api/score", async (req, res) => {
   try {
@@ -47,23 +43,22 @@ app.post("/api/score", async (req, res) => {
       username.trim().length === 0 ||
       typeof score !== "number" ||
       !Number.isInteger(score) ||
-      score < 1
+      score < 1 ||
+      score > 100
     ) {
-      return res.status(400).json({ error: "Invalid payload: username (string) and score (int >=1) required." });
+      return res.status(400).json({ error: "Invalid payload: username (string) and score (int 1–100) required." });
     }
-
-    const uname = username.trim();
 
     // Ensure player exists
     await pool.query(
       "INSERT INTO players (username) VALUES (?) ON DUPLICATE KEY UPDATE username = VALUES(username)",
-      [uname]
+      [username.trim()]
     );
 
     // Insert score
     await pool.query(
       "INSERT INTO scores (player_id, score) VALUES ((SELECT id FROM players WHERE username = ?), ?)",
-      [uname, score]
+      [username.trim(), score]
     );
 
     res.json({ message: "Score submitted!" });
@@ -75,36 +70,19 @@ app.post("/api/score", async (req, res) => {
 
 /**
  * GET /api/leaderboard
- * Returns frequency of scores.
- * Always includes 1–10 (descending), plus any >10 sorted descending at the top.
- * Example: [{ score: 25, times: 2 }, { score: 24, times: 1 }, ..., { score: 10, times: 3 }, ..., { score: 1, times: 0 }]
+ * Returns frequency of scores between 1 and 10, sorted with 10 at top.
+ * [{ score: 10, times: 3 }, { score: 9, times: 1 }, ..., { score: 1, times: 0 }]
  */
 app.get("/api/leaderboard", async (req, res) => {
   try {
     const [rows] = await pool.query(
       `SELECT s.score, COUNT(*) AS times
        FROM scores s
+       WHERE s.score BETWEEN 1 AND 100
        GROUP BY s.score
        ORDER BY s.score DESC`
     );
-
-    // Build frequency map for quick lookup
-    const freqMap = {};
-    rows.forEach(r => { freqMap[r.score] = Number(r.times); });
-
-    const result = [];
-
-    // Add >10 scores first (already sorted DESC by the query)
-    rows.forEach(r => {
-      if (r.score > 10) result.push({ score: r.score, times: Number(r.times) });
-    });
-
-    // Add scores 10 down to 1 (ensure entries even if 0)
-    for (let s = 10; s >= 1; s--) {
-      result.push({ score: s, times: freqMap[s] || 0 });
-    }
-
-    res.json(result);
+    res.json(rows);
   } catch (err) {
     console.error("Error fetching leaderboard:", err);
     res.status(500).json({ error: "Error fetching leaderboard" });
@@ -113,7 +91,7 @@ app.get("/api/leaderboard", async (req, res) => {
 
 /**
  * DELETE /api/clear
- * Clears all players and scores.
+ * Clears all players and scores (resets frequency).
  */
 app.delete("/api/clear", async (req, res) => {
   try {
