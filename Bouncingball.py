@@ -142,9 +142,9 @@ def end_screen(final_score):
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
   # threading.Thread(target = submit_score, args = ("e", final_score), daemon = True).start()
   # submit_score("e", final_score)
-  t = threading.Thread(target=submit_score, args=("e", final_score))
-  t.start()
-  t.join()  # wait until the request finishes
+  # t = threading.Thread(target=submit_score, args=("e", final_score))
+  # t.start()
+  # t.join()  # wait until the request finishes
   pygame.display.flip()
   print("eee")
   wait_for_key()
@@ -192,9 +192,9 @@ def main():
   if developer:
     platform_width, platform_height = width, 25
   else:
-    platform_width, platform_height = 150, 20
+    platform_width, platform_height = 200, 20
   platform_pos = [width // 2 - platform_width // 2, height - platform_height - 10]
-  platform_speed = 20
+  platform_speed = 23
   platform_colour = orange
 
   balls = [{
@@ -309,7 +309,7 @@ def main():
       elif b[speed].y < -max_v:
         b[speed].y = -max_v
       
-      if (platform_pos[0] <= b[pos].x <= platform_pos[0] + platform_width and
+      if (platform_pos[0] <= b[pos].x <= platform_pos[0] + platform_width * platform_width_multi and
           platform_pos[1] <= b[pos].y + b[radius] <= platform_pos[1] + platform_height):
         b[pos].y = platform_pos[1] - b[radius]
         b[speed].y = -abs(b[speed].y)
