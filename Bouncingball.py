@@ -4,6 +4,8 @@ import random
 import time
 import requests
 import threading
+from collections import Counter
+from text import *
 
 pygame.init()
 
@@ -53,14 +55,47 @@ screen_color = black
 pygame.display.set_caption('Bouncing Ball Game')
 font = pygame.font.Font(None, 36)
 
-API_BASE = "http://localhost:3000/api"
+scores = []
 
-def submit_score(username, score):
-  try:
-    res = requests.post(f"{API_BASE}/score", json = {"username": username, "score": score})
-    print("Score submitted:", res.json())
-  except Exception as e:
-    print("Error submitting score:", e)
+def leaderboard_screen():
+  lead = True
+  while lead:
+    screen.fill(black)
+    show_text_on_screen("Leaderboard", 100, 100)
+    pygame.mouse.set_visible(1)
+
+    score_counts = Counter(scores)
+
+    unique_sorted_scores = sorted(score_counts.keys(), reverse=True)[:10]
+
+    y_offset = 200
+    for idx, score in enumerate(unique_sorted_scores, start=1):
+      count = score_counts[score]
+      text = f"{idx}) {score} points — {count} player{'s' if count > 1 else ''}"
+      show_text_on_screen(text, 50, y_offset)
+      y_offset += 70
+
+    home = pygame.Rect(width // 2 - 200, height - 150, 400, 100)
+    mouse_pos = pygame.mouse.get_pos()
+    if home.collidepoint(mouse_pos):
+      write(screen, home, "Home", 65, "black", "gray69", 10)
+    else:
+      write(screen, home, "Home", 65, "black", "white", 10)
+
+    pygame.display.flip()
+
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        pygame.quit()
+        sys.exit()
+      elif event.type == pygame.KEYDOWN:
+        if event.key == pygame.K_ESCAPE:
+          pygame.quit()
+          sys.exit()
+      elif event.type == pygame.MOUSEBUTTONDOWN:
+        if home.collidepoint(mouse_pos):
+          lead = False
+          start_screen()
 
 def show_text_on_screen(text, font_size, y_position):
   font_local = pygame.font.Font(None, font_size)
@@ -88,6 +123,7 @@ def start_screen():
     show_text_on_screen("Press spacebar to start...", 50, height // 2)
     show_text_on_screen("Move the platform with arrow keys...", 65, height // 1.5)
     show_text_on_screen("Mission: Try your best to aim for as high a score as possible", 85, height // 1.2)
+    show_text_on_screen("Press L for Leaderboard", 75, height // 1.2 + 80)
     pygame.display.flip()
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
@@ -100,6 +136,9 @@ def start_screen():
         elif event.key == pygame.K_ESCAPE:
           pygame.quit()
           sys.exit()
+        elif event.key == pygame.K_l:
+          start = False
+          leaderboard_screen()
 
 def cntdown():
   screen.fill(black)
@@ -140,13 +179,8 @@ def end_screen(final_score):
   show_text_on_screen("Good Try! :)", 100, height // 4)
   show_text_on_screen(f"Your final score: {final_score}", 50, height // 2)
   show_text_on_screen("Press spacebar to restart...", 45, height // 1.5)
-  # threading.Thread(target = submit_score, args = ("e", final_score), daemon = True).start()
-  # submit_score("e", final_score)
-  # t = threading.Thread(target=submit_score, args=("e", final_score))
-  # t.start()
-  # t.join()  # wait until the request finishes
+  scores.append(final_score)
   pygame.display.flip()
-  print("eee")
   wait_for_key()
   start_screen()
 
@@ -179,7 +213,6 @@ def rand_spawn_pos():
     random.randint(margin, width - margin - power_up_size[0]), 
     random.randint(margin, height - margin - power_up_size[1] - 200)
   ]
-
 
 def main():
   pos = "pos"
